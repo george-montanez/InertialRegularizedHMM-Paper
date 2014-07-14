@@ -240,8 +240,8 @@ In contrast, an unregularized HMM performs poorly on the same task, since simply
 \hline
 \textbf{Method}                 & \textbf{Accuracy} & \textbf{SNR}  & \textbf{ASNR} & \textbf{SND}  & \textbf{VOI}    & \textbf{Perfect Segmentations}  \\ \hline
 Standard HMM                    & 0.87              & 121.93        & 121.93        & 438.37        & 0.29            & 20/100                          \\ \hline
-MAP HMM ($\zeta = 73$)        & \textbf{0.97}     & \textbf{1.02} & \textbf{1.06} & \textbf{0.20} & \textbf{0.06}   & \textbf{76/100}                   \\ \hline
-Inertial HMM ($\zeta = 73$)     & \textbf{0.98}     & \textbf{1.02} & \textbf{1.06} & \textbf{0.22} & \textbf{0.06}   & \textbf{77/100}                 \\ \hline
+MAP HMM ($\zeta = 73$)        & \textbf{0.97}     & \textbf{1.02} & \textbf{1.05} & \textbf{0.19} & \textbf{0.06}   & \textbf{77/100}                   \\ \hline
+Inertial HMM ($\zeta = 73$)     & \textbf{0.98}     & \textbf{1.02} & \textbf{1.05} & \textbf{0.18} & \textbf{0.06}   & \textbf{77/100}                 \\ \hline
 \multicolumn{7}{l}{\begin{tabular}[c]{@{}l@{}}
     \vspace{0.05em}\\
     \textbf{Accuracy} = Average Accuracy (value of 1.0 is best)\\ 
@@ -254,9 +254,9 @@ Inertial HMM ($\zeta = 73$)     & \textbf{0.98}     & \textbf{1.02} & \textbf{1.
 \label{tab:results}
 \end{table}
 
-Using the one hundred time series human activities dataset described in Section~\ref{sec:datasets}, we performed a quantitative analysis comparing the performance of standard and regularized MAP HMMs on the unsupervised segmentation task. The results are shown in Table~\ref{tab:results}. The MAP HMM achieved large gains in performance over the standard HMM model, with average accuracy of 97\%. Furthermore, the number of segments was close to correct on average, with a value near one in both the absolute and simple ratio case. On average, the MAP HMM over-segmented by only 0.2 segments, and was able to reproduce a perfect segmentation for 77\% of the test cases. The average normalized variation of information was low, at $0.06$.
+Using the one hundred time series human activities dataset described in Section~\ref{sec:datasets}, we performed a quantitative analysis comparing the performance of standard and regularized MAP HMMs on the unsupervised segmentation task. The results are shown in Table~\ref{tab:results}. The MAP HMM achieved large gains in performance over the standard HMM model, with average accuracy of 97\%. Furthermore, the number of segments was close to correct on average, with a value near one in both the absolute and simple ratio case. On average, the MAP HMM over-segmented by only 0.19 segments, and was able to reproduce a perfect segmentation for 77\% of the test cases. The average normalized variation of information was low, at $0.06$.
 
-Results for the inertial regularized HMM with pseudo-observations were almost identical, with slight differences in accuracy, average segment number ratio and total number of correct segmentations. This is unsurprising, given the highly similar mathematical form of their final update equations.
+Results for the inertial regularized HMM with pseudo-observations were almost identical, with slight differences in accuracy and segment number difference (SND). This is unsurprising, given the highly similar mathematical form of their final update equations.
 
 In comparison, a standard hidden Markov model without inertial regularization achieved accuracy of 87\%, but with average absolute segment number ratio of 121.93 and average normalized variation of information value of $0.29$. On average, the segmentations given by the standard HMM differed by $438.37$ segments, compared to the fewer than one segment difference between the MAP HMM and the ground truth sequences. The standard HMM was only able to produce perfect segmentations in 20\% of the test cases.
 

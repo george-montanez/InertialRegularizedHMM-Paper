@@ -1,0 +1,81 @@
+We now derive a second method of regularizing the state transitions, where we alter the HMM likelihood function to include a fictional observation, $V$. This is a binary random variable indicating that a transition was chosen at random from among all transitions, according to some distribution, and that the transition observed was a self-transition. Thus, we view the transitions as being partitioned into two sets, self-transitions and non-self-transitions, and we draw a member of the self-transition set according to a Bernoulli distribution governed by some parameter $p$. Given a latent state sequence $\mathbf{Z}$, with transitions chosen according to transition matrix $\mathbf{A}$, we define $p$ as a function of both $\mathbf{Z}$ and $\mathbf{A}$. We would like $p$ to have two properties: 1) it should increase with increasing $\sum_k A_{kk}$ (probability of self-transitions) and 2) it should increase as the number of self-transitions in $\mathbf{Z}$ increases. This will allow us to encourage self-transitions as a simple consequence of maximizing the likelihood of our observations.
+
+We begin with a version of $p$ based on a penalization constant $0 < \epsilon < 1$ that scales appropriately with the number of self-transitions. If we raise $\epsilon$ to a large positive power, the resulting $p$ will decrease. Thus, we define $p$ as $\epsilon$ raised to the number of non-self-transitions in the state transition sequence, so that the probability of selecting a self-transition increases as the number of non-self-transitions decreases. Using the fact that the number of non-self-transitions equals $(T-1) - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}$, we obtain 
+\begin{align}
+    p &= \epsilon^\text{\tiny NUM.\ OF NON-SELF-TRANSITIONS}\\
+      &= \epsilon^{(T-1) - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}} \notag\\
+      &= \epsilon^{\sum^{T}_{t=2}1 - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}} \notag\\
+      &= \epsilon^{\sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k} - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}} \notag\\
+      &= \epsilon^{\sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k} - z_{(t-1)k}z_{tk}} \notag\\
+      &= \prod^{T}_{t=2}\prod_{k=1}^{K}\epsilon^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}. \label{eq:eps-0}
+\end{align}
+
+Since $\epsilon$ is arbitrary, we choose $\epsilon = A_{kk}$, to allow $p$ to scale appropriately with increasing probability of self-transition. We therefore arrive at
+\begin{align*}
+    p &= \prod^{T}_{t=2}\prod^{K}_{k=1}A_{kk}^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}.
+\end{align*}
+Thus, we define $p$ as a computable function of $\mathbf{Z}$ and $\mathbf{A}$. Defining $p$ in this deterministic manner is equivalent to choosing the parameter value from a degenerate probability distribution that places a single point mass at the value computed, allowing us to easily obtain a posterior distribution on $V$. Furthermore, we see that the function increases as the number of self-transitions increases, since $A_{kk} \leq 1$ for all $k$, and $p$ will generally increase as $\sum_k A_{kk}$ increases. Thus, we obtain a parameter $p \in (0,1]$ that satisfies all our desiderata.
+
+With $p$ in hand, we say that $V$ is drawn according to the Bernoulli distribution, Bern($p$), and we observe $V = 1$ (i.e., a member of the self-transition set was chosen). Since $P(V = 1|\mathbf{Z};\mathbf{A}) = p$, we have
+\begin{align*}
+    P(V = 1|\mathbf{Z}; \mathbf{A}) &= \prod^{T}_{t=2}\prod^{K}_{k=1}A_{kk}^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}.
+\end{align*}
+To gain greater control over the strength of regularization, let $\lambda$ be a positive integer and $\mathbf{V}$ be an $\lambda$-length sequence of pseudo-observations, drawn i.i.d.\ according to Bern($p$). Thus, 
+\begin{align*}
+    P(\mathbf{V} = \mathbf{1}|\mathbf{Z}; \mathbf{A}) &= \left[\prod^{T}_{t=2}\prod^{K}_{k=1}A_{kk}^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}\right]^\lambda
+\end{align*}
+where $\mathbf{1}$ denotes the all-ones sequence of length $\lambda$.
+
+Clearly $\mathbf{V}$ is conditionally independent of $\mathbf{X}$ given the latent state sequence $\mathbf{Z}$. We now consider the joint density over $\mathbf{X}$, $\mathbf{V}$, and $\mathbf{Z}$, making use of our conditional independence assumption. We parameterize the joint density by $\mathbf{\theta} = \{\mathbf{\pi},\mathbf{A}, \mathbf{\phi}\}$, which are the start-state probabilities, state transition matrix and emission parameters, respectively. We have
+\begin{align*}
+    P(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; \mathbf{\theta}) 
+    &= P(\mathbf{V}|\mathbf{Z}; \mathbf{\theta}) P(\mathbf{z}_{1} ; \theta) \left[\prod_{t=1}^{T}P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta})\right]\left[\prod_{t=2}^{T}P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta})\right]
+\end{align*}
+and, taking the log of the likelihood,
+\begin{align*}
+    \ell(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; \mathbf{\theta}) 
+    &= \log P(\mathbf{V}|\mathbf{Z}; \mathbf{\theta}) + \log P(\mathbf{z}_{1}; \theta) + \sum_{t=1}^{T}\log P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) + \sum_{t=2}^{T}\log P(\mathbf{z}_t|\mathbf{z}_{t-1};\mathbf{\theta}).
+\end{align*}
+
+Noting that 
+\begin{align*}
+    P(\mathbf{z}_{1}; \theta) &= \prod_{k=1}^{K}\pi_{k}^{z_{1k}}, \\
+    P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) &= \prod_{k=1}^{K} P(\mathbf{x}_t ; \mathbf{\phi}_k)^{z_{tk}},\text{ and }\\ 
+    P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta}) &= \prod_{k=1}^{K}\prod_{j=1}^{K}A_{jk}^{z_{(t-1)j}z_{tk}},
+\end{align*}
+and substituting into $\ell(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; \mathbf{\theta})$ we obtain
+\begin{align*}
+    \ell(\mathbf{X}, \mathbf{V}=\mathbf{1}, \mathbf{Z} ; \mathbf{\theta}) 
+    &= \sum^{T}_{t=2}\sum^{K}_{k=1}\lambda[z_{(t-1)k} - z_{(t-1)k}z_{tk}]\log A_{kk} + \sum_{k=1}^{K}{z_{1k}}\log \pi_{k} \notag\\
+    &+ \sum_{t=1}^{T}\sum_{k=1}^{K} z_{tk}\log P(\mathbf{x}_t ; \mathbf{\phi}_k) + \sum_{t=2}^{T}\sum_{k=1}^{K}\sum_{j=1}^{K}[z_{(t-1)j}z_{tk}]\log A_{jk}.
+\end{align*}
+
+Following Bishop~\cite{bishop2007pattern}, we define
+\begin{align*}
+    \gamma(z_{tk}) &= \mathbb{E}[z_{tk}] = \sum_{\mathbf{z}}\gamma(\mathbf{z})z_{tk} \\
+    \xi(z_{(t-1)j}, z_{tk}) &= \mathbb{E}[z_{(t-1)j}z_{tk}] = \sum_{\mathbf{z}}\gamma(\mathbf{z})z_{(t-1)j}z_{tk}
+\end{align*}
+to obtain
+\begin{align}\label{eq:main}
+    \mathbb{E}_{\mathbf{Z}}[\ell(\mathbf{X}, \mathbf{V}=\mathbf{1}, \mathbf{Z} ; \mathbf{\theta})]
+    &= \sum^{T}_{t=2}\sum^{K}_{k=1}\lambda[\gamma(z_{(t-1)k})-\xi(z_{(t-1)k}, z_{tk})]\log A_{kk} + \sum_{k=1}^{K}\gamma(z_{1k})\log \pi_{k} \notag\\
+    &+ \sum_{t=1}^{T}\sum_{k=1}^{K} \gamma(z_{tk})\log P(\mathbf{x}_t ; \mathbf{\phi}_k) + \sum_{t=2}^{T}\sum_{k=1}^{K}\sum_{j=1}^{K}\xi(z_{(t-1)j}, z_{tk})\log A_{jk}.
+\end{align}
+
+Using Lagrange multipliers, taking the derivative of (\ref{eq:main}) with respect to $A_{jk}$ and setting to the result to zero, we obtain the regularized maximum likelihood estimate for $A_{jk}$, namely
+\begin{align*}
+    A_{jk} &= \frac{\sum_{t=2}^{T} \xi(z_{(t-1)k}, z_{tk}) + \sum_{t=2}^{T}{\mathbbm{1}(j = k)}\lambda[\gamma(z_{(t-1)k}) - \xi(z_{(t-1)k}, z_{tk})]}   
+    { \sum_{t=2}^{T} \sum_{i=1}^{K} \left(\xi(z_{(t-1)j}, z_{ti}) + {\mathbbm{1}(j = i)}\lambda[\gamma(z_{(t-1)i}) - \xi(z_{(t-1)i}, z_{ti})]\right)}
+\end{align*}
+where $\mathbbm{1}(\cdot)$ denotes the indicator function. The forward-backward algorithm can then be used for efficient computation of the $\gamma$ and $\xi$ values, as is the case for unregularized HMMs.
+
+Ignoring normalization, we see that
+\begin{align*}
+    A_{jk} &\propto \begin{cases} 
+                \sum_{t=2}^{T} \xi(z_{(t-1)k}, z_{tk}) + \lambda\sum_{t=2}^{T}[\gamma(z_{(t-1)k}) - \xi(z_{(t-1)k}, z_{tk})] & \mbox{if } j=k \\ 
+                \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk}) & \mbox{otherwise.}
+              \end{cases}
+\end{align*}
+Thus, $\lambda$ is a multiplier of additional mass contributions for self-transitions, where the contributions are the difference between $\gamma(z_{(t-1)k})$ and $\xi(z_{(t-1)k}, z_{tk})$. These two quantities represent, respectively, the expectation of being in a state $k$ at time $t-1$ and the expectation of remaining there in the next time step. The larger $\lambda$ or the larger the difference between arriving at a state and remaining there, the greater the additional mass given to self-transition. 
+
+Similar to the MAP case, we let $\lambda = (T-1)^{\zeta}$ to maintain consistent regularization strength in the face of increasing sequence length, where $\zeta$ becomes our new regularization parameter.

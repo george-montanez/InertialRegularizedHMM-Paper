@@ -1,5 +1,6 @@
 \documentclass[12pt]{article}
-\usepackage{url,graphicx,tabularx,array,geometry,amsmath,amssymb,amsthm,bbm}
+\usepackage{url,graphicx,tabularx,array,geometry,amsmath,amssymb,amsthm,bbm,textcomp,algorithm}
+\usepackage[noend]{algpseudocode}
 \usepackage{nips12submit_e,times}
 %\usepackage[sc]{mathpazo}
 
@@ -12,6 +13,14 @@
 \newcommand{\Aseq}{\{A_k\}_{k=1}^{\infty}}
 \newcommand{\unionA}{\bigcup_{k=1}^{\infty} A_k}
 \newcommand{\argmax}{\operatornamewithlimits{argmax}}
+
+\newenvironment{dedication}
+        {\vspace{0.0ex}\begin{quotation}\begin{center}\begin{em}}
+        {\par\end{em}\end{center}\end{quotation}}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
 
 \nipsfinalcopy 
 
@@ -45,10 +54,12 @@ Sunnyvale, CA USA\\
 \maketitle
 
 \begin{abstract}
-    Faced with the problem of segmenting a multivariate time series in an unsupervised manner, we derive two independent methods of regularizing hidden Markov models to accomplish the task. Regularization on state transitions provide smooth transitioning among states, such that the sequences are split into broad, contiguous segments. Our methods are compared to a baseline hidden Markov model, which suffers from rapid state transitioning, over-segmentation and poor performance on a segmentation task involving human activity accelerometer data from the UCI Machine Learning Repository. In comparison, the regularized methods developed here are able to perfectly segment the human activity data in 77 of 100 test cases, with accuracy of 98\% and variation of information near zero. Compared to other recent approaches, our methods provide simple, drop-in replacements for standard hidden Markov model update rules, allowing standard expectation maximization (EM) algorithms to be used for learning. Lastly, we make progress towards tuning the regularization strength in an unsupervised manner.
+    Faced with the problem of segmenting a multivariate time series in an unsupervised manner, we derive and test two methods of regularizing hidden Markov models for this task. Regularization on state transitions provide smooth transitioning among states, such that the sequences are split into broad, contiguous segments. Our methods are compared with a state-of-the-art hierarchical Dirichlet process hidden Markov model (HDP-HMM) and a baseline standard hidden Markov model, of which the former suffers from poor performance on moderate-dimensional data and the latter suffers from rapid state transitioning, over-segmentation and poor performance on a segmentation task involving human activity accelerometer data from the UCI Machine Learning Repository. The regularized methods developed here are able to perfectly segment the human activity data in roughly half of the test cases, with accuracy of 94\% and low variation of information. In contrast to the HDP-HMM, our methods provide simple, drop-in replacements for standard hidden Markov model update rules, allowing standard expectation maximization (EM) algorithms to be used for learning. Lastly, we make progress towards tuning the regularization strength in an unsupervised manner and derive equations for online learning of the regularized HMM parameters.
 \end{abstract}
 
 \section{Introduction}
+\begin{dedication} ``Some seek complex solutions to simple problems; it is better to find simple solutions to complex problems.'' - \emph{Soramichi Akiyama}
+\end{dedication}
 
 \input{introduction.tex}
 
@@ -76,7 +87,7 @@ As stated above, we are given a single $d$-dimensional multivariate time series 
 
 The output of the process is a list of integer tuples $(t, k)$, where $1 \leq t \leq T$ denotes the ending time of the segment and $1 \leq k \leq K$ the state that occurs during that segment. 
 
-\section{Proposed Approaches}
+\section{Inertial Hidden Markov Models}
 
 \subsection{Baseline: $K$-state Hidden Markov Model}
 
@@ -86,7 +97,7 @@ As a baseline, a standard $K$-state HMM model with Gaussian emission densities i
 
 Following~\cite{MAP1994}, we alter the standard HMM to include a Dirichlet prior on the transition probability matrix, such that transitions out-of-state are penalized by some regularization factor. A Dirichlet prior on the transition matrix $\mathbf{A}$, for the $j$th row, has the form
 \begin{align*}
-    p(A_j; \eta) &\propto \prod_{i=1}^{K} A_{jk}^{\eta_{jk}}
+    p(A_j; \eta) &\propto \prod_{i=1}^{K} A_{jk}^{\eta_{jk}-1}
 \end{align*}
 where the $\eta_{jk}$ are free parameters and $A_{jk}$ is the transition probability from state $j$ to state $k$. The posterior joint density over $\mathbf{X}$ and $\mathbf{Z}$ becomes
 \begin{align*}
@@ -107,7 +118,7 @@ We then use MAP estimation in the M-step of the EM algorithm, to update the tran
 
 Although we have a tractable, efficient algorithm for learning the regularized HMM and, given our prior, we can control the probability of self-transitions among states, this method requires that we choose a set of $K^2$ parameters for the Dirichlet prior. However, since we are solely concerned about increasing the probability of self-transitions, we can reduce these parameters to a single parameter $\lambda$ governing the amplification of self-transitions. We therefore define $\eta_{jk} = 1$ when $j\not=k$ and $\eta_{kk}= \lambda \geq 1$ otherwise, and the transition update equation becomes
 \begin{align*}
-    A_{jk} &= \frac{(\lambda - 1)^{\mathbbm{1}(j = k)} + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
+    A_{jk} &= \frac{(\lambda - 1){\mathbbm{1}(j = k)} + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
     {(\lambda - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}
 \end{align*}
 where $\mathbbm{1}(\cdot)$ denotes the indicator function.
@@ -131,10 +142,10 @@ Astute readers may notice that the strength of the regularization diminishes wit
 \end{figure}
 
 We desire a model where the regularization strength is scale-free, having roughly the same strength regardless of how the time series grows. To achieve this, we define the $\lambda$ parameter to scale with the number of transitions, namely $\lambda = (T-1)^\zeta$, and our scale-free update equation becomes
-\begin{align*}
-    A_{jk} &= \frac{((T - 1)^{\zeta}-1)^{\mathbbm{1}(j = k)} + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
+\begin{align}\label{eq:SCALE-FREE-MAP}
+    A_{jk} &= \frac{((T - 1)^{\zeta}-1){\mathbbm{1}(j = k)} + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
     {((T - 1)^{\zeta} - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}.
-\end{align*}
+\end{align}
 This preserves the effect of regularization as $T$ increases, and $\zeta$ becomes our new regularization parameter, controlling the strength of the regularization. Figures~\ref{fig:short-real-data-scale-free} and \ref{fig:long-real-data-scale-free} shows the scale-free regularized result on both a short and long sequence, using the same regularization parameter. The parameter was chosen in reference to the short sequence, selecting the smallest parameter that still provided correct segmentation. As can be seen, the regularization strength is sufficient for the long sequence as well, illustrating the effectiveness of a scale-free parameterization.
 
 \begin{figure}[htbp]
@@ -164,25 +175,92 @@ We first define a range of possible regularization parameter values (such as $\l
     G(L) &= 1 - \frac{2}{m-1}\left(m - \frac{\sum_{i=1}^{m} i l_i}{\sum_{i=1}^{m} l_i}\right)
 \end{align*}
 
-
 Our assumption is that the true segmentation has a Gini ratio less than one-half, which corresponds to having more equality among segment lengths than not. 
 
 We perform a binary search on our search interval, and for each parameter we train a model and evaluate the Gini ratio of the computed segment lengths. If the ratio is greater than one-half, we restrict ourselves to the upper interval and recurse. If the ratio is less than one-half, we store the current parameter value, reduce the parameter space to the lower interval and recurse. At the base of our recursion, we see if the interval width is smaller than some $\epsilon$ value, then return the parameter. On returning, we pass back the result from the recursion branch we took. As a special case, when the current parameter value has satisfied the Gini ratio condition but the left-branch recursion has not, we return the current parameter value rather than the child recursion value. Doing this guarantees that the algorithm will return the smallest regularization parameter value satisfying the Gini coefficient criterion, if such a value exists in the search space. Thus we have a parameter-free method of regularizing the segmentation task, at a cost of increasing runtime complexity by a factor of $O(\log_2 (R / \epsilon))$, where $R$ is the range of the parameter space.
 
+\section{Online Learning of Inertial HMM parameters}
+
+Hidden Markov models traditionally use batch methods for learning model parameters, such as Baum-Welch EM. Since our inertial regularization methods rely on standard EM learning, we can naturally incorporate incremental EM learning techniques into our system. We thus extend the work of Stenger \emph{et al.}~\cite{stenger2001} to provide an online learning algorithm for our regularized MAP hidden Markov model, which allows scaling to arbitrarily large datasets. Theoretical justification for incremental online EM learning is given in~\cite{Neal:1999:VEA:308574.308679}.
+
+\subsection{Parameter Update Equations}
+
+Define $D_{T,i} := ((T-1)^\zeta -1) + \sum_{t=2}^{T}\sum_{k=1}^{K} \xi(z_{(t-1)i}, z_{tk})$. The recurrence for $D_{T,i}$ is
+\begin{align*}
+    D_{T,i} &= [(T-1)^\zeta - (T-2)^\zeta] +  \sum_{k=1}^{K} \xi(z_{(T-1)i}, z_{Tk}) + D_{(T-1), i}
+\end{align*}
+where $T$ is the current time-step. Since $T$ is both the current and final time-step, we have $\beta(z_{T,k}) = 1$ for $k = 1, \ldots, K$, and thus
+\begin{align*}
+    \xi(\mathbf{z}_{t-1}, \mathbf{z}_{t}) 
+            &= P(\mathbf{z}_{t-1}, \mathbf{z}_{t} | \mathbf{X}) \\
+            &= \frac{\alpha(\mathbf{z}_{t-1})p(\mathbf{x}_t|\mathbf{z}_t; \phi)p(\mathbf{z}_{t}|\mathbf{z}_{(t-1)})\beta(\mathbf{z}_t)}{p(\mathbf{X})} \\
+            &= \frac{\alpha(z_{(t-1)i})p(\mathbf{x}_t; \phi_j)A_{ij}^{(T-1)}}{\sum_{k=1}^{K}\alpha(z_{tk})}
+\end{align*}
+where
+\begin{align*}
+    \alpha(z_{tj}) &= \left[\sum_{i=1}^{K} \alpha(z_{(t-1)i})A_{ij}^{(t-1)}\right]p(\mathbf{x}_t; \phi_j).
+\end{align*}
+
+An efficient online update equation for the regularized transition matrix is then given by
+\begin{align*}
+    A_{ij}^{(T)} &= \frac{\xi(z_{(T-1)i}, z_{Tj})}{D_{T,i}} + \frac{\mathbbm{1}(i = j)[(T-1)^\zeta - (T-2)^\zeta]}{D_{T,i}} + \frac{D_{(T-1), i}}{D_{T,i}}A_{ij}^{(T-1)}.
+\end{align*}
+
+Also, because $\beta(z_{T,k}) = 1$, we have $\gamma(z_{tk}) = \alpha(z_{tk}) / \sum_{i=1}^{K}\alpha(z_{ti})$. The corresponding incremental update equations for a Gaussian emission model (as reported in~\cite{stenger2001}) are 
+\begin{align*}
+    \mathbf{\mu}_{j}^{(T)} &= \frac{\sum_{t=1}^{T-1}\gamma(z_{tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\mathbf{\mu}_{j}^{(T-1)} + \frac{\gamma(z_{Tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\mathbf{x}_T
+\end{align*}
+and
+\begin{align*}
+    \mathbf{S}_j^{(T)} &= \frac{\sum_{t=1}^{T-1}\gamma(z_{tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\mathbf{S}_j^{(T-1)} + \frac{\gamma(z_{Tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\left(\mathbf{x}_T - \mathbf{\mu}_j^{(T)}\right)\left(\mathbf{x}_T - \mathbf{\mu}_j^{(T)}\right)'
+\end{align*}
+where $(\cdot)'$ denotes the matrix transpose operation and $\mathbf{S}_j$ is the covariance matrix for state $j$.
+
+\subsection{Initialization}
+
+The process begins by batch-learning initial parameter estimates from a small portion of the time-series. These estimates are used for $\mathbf{A}^{(1)}$, $\mathbf{\mu}^{(1)}$, $\mathbf{S}^{(1)}$ and $\pi(\mathbf{z}_t)$. For the $\alpha$ values, we initialize $\alpha(z_{1j}) = \pi(z_{1j})p(\mathbf{x}_1; \phi_j)$ for each $j$. Using Equation~\ref{eq:SCALE-FREE-MAP} and the definition of $D_{T,i}$, we compute
+\begin{align*}
+    D_{2,i} &= \sum_{j=1}^{K} \xi(z_{1i}, z_{2j}), \\
+    A_{ij}^{(2)} &= \frac{\xi(z_{1i}, z_{2j})}{D_{2,i}}.
+\end{align*}
+The estimates are then updated for each new observation, using the update equations given above. Algorithm~\ref{alg:incremental} outlines the order in which the various terms are computed.
+
+\begin{algorithm}
+\caption{}
+\begin{algorithmic}[1]
+\Procedure{Incremental Learning of Regularized HMM}{}
+\State Batch learn initial parameter estimates from short segment of data.
+\State Compute $D_{2,i}$ and $A_{ij}^{(2)}$ for all $i,j$.
+\BState For $T > 2$:
+\State Compute $\alpha$ values for observation at time $T$.
+\State Compute $\xi(z_{(T-1)i},z_{Tj})$ values for all $i,j$.
+\State Compute $\gamma(z_{Tj})$ and $D_{T,i}$ values for all $i,j$.
+\State Update $A_{i,j}^{(T)}$ using incremental update rule.
+\State Update $\mathbf{\mu}_{j}^{(T)}$ and $\mathbf{S}_{j}^{(T)}$ using incremental update rules.
+\EndProcedure
+\end{algorithmic}
+\label{alg:incremental}
+\end{algorithm}
+
+\subsection{Robust Online Prediction}
+
+In keeping with our desire for slow state transitions, we now consider the problem of incremental prediction. If an observation at time $t$ (the current time step) is an outlier, we cannot know whether the model should remain in the same hidden state, treating the outlier as an anomaly, or transition to a new hidden state. To overcome this limitation, we propose delayed prediction of state labels using a sliding window of length $w$. As the window moves through the observation sequence, the Viterbi algorithm is performed on the section of data within the window and a prediction for the $(t - w/2)$th observation is output. This allows for ``future'' observations to affect ``past'' observations within the window, via the backtracking maximization performed by the algorithm. Assuming we batch-learned an initial segment of data longer than $w/2$, we can begin output delayed state label predictions as soon as incremental learning begins.
+
 \section{Experiments}\label{sec:Experiments}
 
-We perform two segmentation tasks on simulated and real multivariate time series data, using our scale- and parameter-free regularized HMM. For comparison, we present the results of applying a standard $K$-state hidden Markov model, where the correct number of states $K$ is provided for both models. We also test the result from providing an incorrect number of states to both models, where we can see the positive effects of including regularization even when the correct number of states is not known. Per the models used, we performed all tasks in an unsupervised manner, with state labels being used only for evaluation.
+We perform two segmentation tasks on simulated and real multivariate time series data, using our scale- and parameter-free regularized inertial HMMs. For comparison, we present the results of applying a standard $K$-state hidden Markov model as well as the Bayesian hierarchical Dirichlet process hidden Markov model (sticky HDP-HMM) of Fox \emph{et al.}~\cite{fox2011sticky}. We performed all tasks in an unsupervised manner, with state labels being used only for evaluation.
 
 \subsection{Data}\label{sec:datasets}
+\textbf{TO DO:} Need to describe how synthetic data was generated.
 
-Our simulated dataset consists of twenty-thousand time points of twenty dimensional data (20D), generated using two latent state multivariate Gaussians with unit covariance and differing means. State 1 is mean zero, whereas State 2 has unit mean. The data are generated from the first Gaussian for 3,333 time points, then from the second for the next 3,333 points, then the final 3,334 are generated again from the first Gaussian. This provides a simple test case for the two methods. Figure~\ref{fig:simulated} shows the simulated data and states that generated them.
-
-\begin{figure}[htbp]
-  \caption{Simulated two-state, 20-dimensional multivariate data.}
-  \centering
-    \includegraphics[width=1.\linewidth]{images/2-state-simulated-data.pdf}
-    \label{fig:simulated}
-\end{figure}
+%Our simulated dataset consists of twenty-thousand time points of twenty dimensional data (20D), generated using two latent state multivariate Gaussians with unit covariance and differing means. State 1 is mean zero, whereas State 2 has unit mean. The data are generated from the first Gaussian for 3,333 time points, then from the second for the next 3,333 points, then the final 3,334 are generated again from the first Gaussian. This provides a simple test case for the two methods. Figure~\ref{fig:simulated} shows the simulated data and states that generated them.
+%
+%\begin{figure}[htbp]
+%  \caption{Simulated two-state, 20-dimensional multivariate data.}
+%  \centering
+%    \includegraphics[width=1.\linewidth]{images/2-state-simulated-data.pdf}
+%    \label{fig:simulated}
+%\end{figure}
 
 \begin{figure}[htbp]
   \caption{Human activities accelerometer data. Three state, 45-dimensional.}
@@ -191,32 +269,42 @@ Our simulated dataset consists of twenty-thousand time points of twenty dimensio
     \label{fig:accelerometer}
 \end{figure}
 
-The second dataset is generated from real-world forty-five dimensional (45D) human accelerometer data~\cite{Altun:2010:CSC:1823245.1823314} recorded for users performing five different activities, namely, playing basketball, rowing, jumping, ascending stairs and walking in a parking lot. We generated one hundred multivariate times series from the underlying dataset, with varying activities (latent states) and number of segments. To generate these sets, we chose among the five different activities and chose anywhere from two to twenty segments. The process was as follows. First, we chose the number of segments, uniformly from $\{2, \ldots, 20\}$. Then, for each segment, we chose an activity uniformly at random from among the five possible, and selected a segment length proportion of between 5\% and 50\%. The selected number of corresponding time points were extracted from the activity (keeping track of position in the sequence, and modulo the length of the sequence), rescaled to zero mean and unit variance, and appended to the output sequence. The final output sequence was truncated to ten thousand time points, or discarded if the sequence contained fewer than ten thousand points or fewer than two distinct activities. This resulted in a multivariate time series of fixed length, with varying number of segments, activities and segment lengths. The process was repeated to generate one hundred such time series of ten thousand time points each used in the quantitative analysis described in Section~\ref{sec:quantitative}. An example of such generated data sequences is shown in Figure~\ref{fig:accelerometer}.
+The second dataset is generated from real-world forty-five dimensional (45D) human accelerometer data~\cite{Altun:2010:CSC:1823245.1823314} recorded for users performing five different activities, namely, playing basketball, rowing, jumping, ascending stairs and walking in a parking lot. The data were recorded from a single subject using five Xsens MTx\texttrademark\ units attached to the torso, arms and legs. Each unit had nine sensors, which recorded accelerometer $(X, Y, Z)$ data, gyroscope $(X,Y,Z)$ data and magnetometer $(X,Y,Z)$ data, for a total of forty-five signals at each time point.
+
+We generated one hundred multivariate times series from the underlying dataset, with varying activities (latent states) and number of segments. To generate these sets, we chose among the five different activities and chose anywhere from two to twenty segments. The process was as follows. First, we uniformly chose the number of segments, between two and twenty. Then, for each segment, we chose an activity uniformly at random from among the five possible, and selected a uniformly random segment length proportion. The selected number of corresponding time points were extracted from the activity (keeping track of position in the sequence, and modulo the length of the sequence), rescaled to zero mean and unit variance, and appended to the output sequence. The final output sequence was truncated to ten thousand time points, or discarded if the sequence contained fewer than ten thousand points or fewer than two distinct activities. Additionally, prospective time series were rejected and replaced if they caused numerical instability issues for the algorithms tested, which occurred for some time series with many (or extremely short) segments. This process produced multivariate time series of fixed length, with varying number of segments, activities and segment lengths. The process was repeated to generate one hundred such time series of ten thousand time points each used in the quantitative analysis described in Section~\ref{sec:quantitative}. An example of such generated data sequences is shown in Figure~\ref{fig:accelerometer} and the distribution of the time series according to number of activities and segments is shown in Figure~\ref{fig:distribution}.
+
+\begin{figure}[htbp]
+    \caption{Distribution of Accelerometer Time Series Data (w/jitter).}
+  \centering
+    \includegraphics[width=1.\linewidth]{images/distribution_of_dataset_segments.pdf}
+    \label{fig:distribution}
+\end{figure}
 
 \subsection{Methodology}
 
-We compared performance of a standard $K$-state hidden Markov model with our regularized MAP HMM on the two datasets described in the previous section. For the second dataset, we performed a quantitative analysis, treating the task as a multi-class classification problem, and measured the minimum zero-one loss under all possible permutations of output labels, to accommodate the fact that the output labels of an HMM may be a permuted mapping of the true labels. We measured the normalized variation of information~\cite{meila} between the predicted state sequence and true state sequence, which is an information metric capturing the symmetric two-way conditional entropy between two partitionings (clusterings) of a sequence.  In addition to this, we considered the ratio of predicted number of segments to true number of segments, which gives us a sense of whether a method over- or under-segments data, and the absolute segment number ratio (ASNR), which is defined as
+We compared performance of a standard $K$-state hidden Markov model with our batch-learned regularized HMMs on the two datasets described in the previous section. For the second dataset, we performed a quantitative analysis, treating the task as a multi-class classification problem, and measured the minimum zero-one loss under all possible permutations of output labels, to accommodate the fact that the output labels of an HMM may be a permuted mapping of the true labels. We measured the normalized variation of information~\cite{meila} between the predicted state sequence and true state sequence, which is an information metric capturing the symmetric two-way conditional entropy between two partitionings (clusterings) of a sequence.  In addition to this, we considered the ratio of predicted number of segments to true number of segments, which gives us a sense of whether a method over- or under-segments data, and the absolute segment number ratio (ASNR), which is defined as
 \[
     \text{ASNR} = \frac{\max(S_t, S_p)}{\min(S_t, S_p)}
 \]
 where $S_t$ is the true number of segments in the sequence and $S_p$ is the predicted number of segments. This value tells us how much a segmentation method diverges from the ground truth in terms of relative factor of segments. Lastly, we tracked the number of segments difference between the predicted segmentation and true segmentation and how many segmentations we done perfectly, giving the correct states at all correct positions.
 
-To speed up evaluation, we used a fixed MAP regularization parameter for each set of tests ($\zeta = 73$), which is the largest regularization value capable of being used on the test system. As the parameter value decreases, we get performance more similar to the standard HMM, where performance is identical for $\zeta = 0$ and $\zeta = 1$, for MAP and pseudo-observation regularization, respectively.
+To speed up evaluation, we used a fixed MAP regularization parameter for each set of tests ($\zeta = 74$), which is the largest regularization value capable of being used on the test system. As the parameter value decreases, we get performance more similar to the standard HMM, where performance is identical for $\zeta = 0$ and $\zeta = 1$, for MAP and pseudo-observation regularization, respectively.
+
+We also evaluated the ``sticky'' hierarchical Dirichlet process hidden Markov model (HDP-HMM) of Fox \emph{et al.}~\cite{fox2011sticky} on the one hundred time series human activity accelerometer dataset. The publicly available HDP-HMM toolbox for MATLAB~\cite{HDP-HMM-TOOLKIT} was used, with default settings for the priors. The Gaussian emission model with normal inverse Wishart (NIW) prior were used, and the truncation level $L$ for each example was set to the true number of states, in fairness for comparing with the HMM methods developed here, which are also given the true number of states. The ``stickiness'' $\kappa$ parameter was chosen in a data-driven manner by testing values of $\kappa=0.1$ (the default), 1.0, 5.0, 10.0, 50.0, 100.0, 250.0, 500.0, 750.0 and 1000.0 for best performance over ten randomly selected examples each. The mean performance of the 500th Gibbs sample of ten trials was then taken for each parameter setting, and the best $\kappa$ was empirically chosen. For the synthetic dataset, ... For the real human accelerometer data, we found a value of $\kappa=100.0$ provided the best accuracy and relatively strong variation of information performance. These parameter values were used for evaluation on each entire dataset, respectively.
+
+To evaluate the HDP-HMM, we performed five trials one each example in the test dataset, measuring performance of the 1000th Gibbs sample for each trial. The mean performance was then computed for the trials, and the average of all one hundred test examples was recorded.
 
 \section{Results}
 
 \subsection{Simulated Data Results}
+\textbf{TO DO:} Will need to revisit this section once I have the final results from synthetic dataset.
 
-Both methods perform well on the simulated dataset. The standard HMM correctly segments the data into the latent state segments, without the need for regularization. Thus, we should expect our parameter-free regularization method to also correctly segment the series and select a small regularization parameter value.
-
-Figure~\ref{fig:sim-results-MAP} shows the result of the regularized HMM, which also correctly segments the series. Time series data from a single dimension is displayed, for ease of visualization. The final parameter value found was $\zeta = 0.005$, using an epsilon of 0.01. (Thus the final $\zeta$ is simply the smallest regularization value permissible, being the center of the interval $[0,0.01]$.) Thus, our method performs as expected on the simple simulated test case and discovers the correct regularization parameter.
-
-\begin{figure}[htbp]
-  \caption{Segmentation of two-state simulated data using regularized MAP HMM.}
-  \centering
-    \includegraphics[width=.8\linewidth]{images/MAP_PARAM_FREE_results_sim_data_0,00_2_states.pdf}
-    \label{fig:sim-results-MAP}
-\end{figure}
+%\begin{figure}[htbp]
+%  \caption{Segmentation of two-state simulated data using regularized MAP HMM.}
+%  \centering
+%    \includegraphics[width=.8\linewidth]{images/MAP_PARAM_FREE_results_sim_data_0,00_2_states.pdf}
+%    \label{fig:sim-results-MAP}
+%\end{figure}
 
 \subsection{Human Activities Accelerometer Data Results}\label{sec:quantitative}
 
@@ -240,12 +328,14 @@ In contrast, an unregularized HMM performs poorly on the same task, since simply
 
 \begin{table}[htbp]
 \caption{Results from quantitative evaluation on multivariate human accelerometer data.}
+\resizebox{1.0\linewidth}{!}{
 \begin{tabular}{|lrrrrrr|}
 \hline
-\textbf{Method}                 & \textbf{Accuracy} & \textbf{SNR}  & \textbf{ASNR} & \textbf{SND}  & \textbf{VOI}    & \textbf{Perfect Segmentations}  \\ \hline
-Standard HMM                    & 0.87              & 121.93        & 121.93        & 438.37        & 0.29            & 20/100                          \\ \hline
-MAP HMM ($\zeta = 73$)        & \textbf{0.97}     & \textbf{1.02} & \textbf{1.05} & \textbf{0.19} & \textbf{0.06}   & \textbf{77/100}                   \\ \hline
-Inertial HMM ($\zeta = 73$)     & \textbf{0.98}     & \textbf{1.02} & \textbf{1.05} & \textbf{0.18} & \textbf{0.06}   & \textbf{77/100}                 \\ \hline
+\textbf{Method}                   & \textbf{Accuracy} & \textbf{SNR}  & \textbf{ASNR}     & \textbf{SND}  & \textbf{VOI}    & \textbf{Perfect}  \\ \hline
+Sticky HDP-HMM ($\kappa = 100$)   & 0.60              & 0.75          &  4.68             & 5.03          & 0.95            & 0/100                           \\ 
+Standard HMM                      & 0.79              & 134.59        & 134.59            & 584.16        & 0.38            & 9/100                          \\ 
+MAP HMM ($\zeta = 33.5$)          & \textbf{0.94}     & 1.28          & 1.43              & 2.62          & \textbf{0.14}   & \textbf{48/100}                 \\ 
+Inertial PsO HMM ($\zeta = 49.0$) & \textbf{0.94}     & \textbf{1.03} & \textbf{1.29}     & \textbf{1.29} & 0.15            & \textbf{48/100}                 \\ \hline
 \multicolumn{7}{l}{\begin{tabular}[c]{@{}l@{}}
     \vspace{0.05em}\\
     \textbf{Accuracy} = Average Accuracy (value of 1.0 is best)\\ 
@@ -253,30 +343,42 @@ Inertial HMM ($\zeta = 73$)     & \textbf{0.98}     & \textbf{1.02} & \textbf{1.
     \textbf{ASNR} = Average Absolute Segment Number Ratio (value of 1.0 is best)\\ 
     \textbf{SND} = Average Segment Number Difference (value of 0.0 is best)\\ 
     \textbf{VOI} = Average Normalized Variation of Information (value of 0.0 is best)\\ 
-    \textbf{Perfect Segmentations} = Total number of perfect/correct segmentations \end{tabular}} 
+    \textbf{Perfect} = Total number of perfect/correct segmentations \end{tabular}} 
 \end{tabular}
+}
 \label{tab:results}
 \end{table}
 
-Using the one hundred time series human activities dataset described in Section~\ref{sec:datasets}, we performed a quantitative analysis comparing the performance of standard and regularized MAP HMMs on the unsupervised segmentation task. The results are shown in Table~\ref{tab:results}. The MAP HMM achieved large gains in performance over the standard HMM model, with average accuracy of 97\%. Furthermore, the number of segments was close to correct on average, with a value near one in both the absolute and simple ratio case. On average, the MAP HMM over-segmented by only 0.19 segments, and was able to reproduce a perfect segmentation for 77\% of the test cases. The average normalized variation of information was low, at $0.06$.
+Using the one hundred time series human activities dataset described in Section~\ref{sec:datasets}, we performed a quantitative analysis comparing the performance of standard and regularized MAP HMMs on the unsupervised segmentation task. The results are shown in Table~\ref{tab:results}. 
 
-Results for the inertial regularized HMM with pseudo-observations were almost identical, with slight differences in accuracy and segment number difference (SND). This is unsurprising, given the highly similar mathematical form of their final update equations.
-
-In comparison, a standard hidden Markov model without inertial regularization achieved accuracy of 87\%, but with average absolute segment number ratio of 121.93 and average normalized variation of information value of $0.29$. On average, the segmentations given by the standard HMM differed by $438.37$ segments, compared to the fewer than one segment difference between the MAP HMM and the ground truth sequences. The standard HMM was only able to produce perfect segmentations in 20\% of the test cases.
+\textbf{TO DO:} Discussion of results, once we have final results for all.
+%The MAP HMM achieved large gains in performance over the standard HMM model, with average accuracy of 94\%. Furthermore, the number of segments was close to correct on average, with a value near one in both the absolute and simple ratio case. On average, the MAP HMM over-segmented by fewer than two segments, and was able to reproduce a perfect segmentation for 48 of the 100 test cases. The average normalized variation of information was low, at $0.14$.
+%
+%Results for the inertial regularized HMM with pseudo-observations were almost identical, with slight differences in segment number ratio (SNR) and segment number difference (SND). This is unsurprising, given the highly similar mathematical form of their final update equations.
+%
+%In comparison, a standard hidden Markov model without inertial regularization achieved accuracy of 79\%, but with average absolute segment number ratio of 134.59 and average normalized variation of information value of $0.38$. On average, the segmentations given by the standard HMM differed by $584.16$ segments, compared to the fewer than two segments difference between the MAP HMM and the ground truth sequences. The standard HMM was only able to produce perfect segmentations in 9\% of the test cases.
 
 Thus, the inertial regularization produces drastic improvements for unsupervised segmentation of human accelerometer activity data.
 
-As a comparison, we also evaluated the MAP HMM with a small parameter of $\zeta = 3$. As expected, we achieved results nearer to that of the standard HMM, with average accuracy of 0.88, average normalized variation of information value of 0.23, average segment number ratio of 67.7 and perfect segmentation of 42/100 sequences.
+Even more striking was the improvement over the sticky HDP-HMM of Fox \emph{et al.}~\cite{fox2011sticky}. The performance of that method was poor, with normalized variation of information near 1 (i.e., no correlation between predicted labels and the true segment labels). Problems for this method arose from the moderate dimensionality of the data, an issue confirmed by Fox and Sudderth through private correspondence. The sticky HDP-HMM suffers from slow mixing rates as the dimensionality increases, and computation time explodes, being roughly cubic in the dimension. As a result, the one hundred test examples took several days of computation time to complete, whereas the inertial HMM methods took a few hours.
 
 \section{Discussion}
 
 Our results demonstrate the effectiveness of inertial regularization on HMMs for time series segmentation. Although derived in two independent ways, the MAP regularized and pseudo-observation inertial regularized HMM converge on a similar maximum likelihood update equation, and thus, have similar performance. Either version can be used for segmentation tasks, according to user preference. 
 
-The human activity task highlighted an issue with using standard HMMs for segmentation of time series with infrequent state changes, namely, over-segmentation. Incorporating regularization for state transitions provides a simple solution to this problem. Since our methods rely on changing a single update equation for a standard HMM learning method, they can be easily incorporated into HMM learning libraries with minimal effort. This ease-of-implementation gives a strong advantage over existing persistent-state HMM methods, such as the recent sticky HMM framework developed by Fox \emph{et al.}~\cite{fox2011sticky}.
+The human activity task highlighted an issue with using standard HMMs for segmentation of time series with infrequent state changes, namely, over-segmentation. Incorporating regularization for state transitions provides a simple solution to this problem. Since our methods rely on changing a single update equation for a standard HMM learning method, they can be easily incorporated into HMM learning libraries with minimal effort. This ease-of-implementation gives a strong advantage over existing persistent-state HMM methods, such as the recent sticky HDP-HMM framework of Fox \emph{et al.}~\cite{fox2011sticky}.
 
-\section{Related Work}
+\section{Related Work and Conclusions}
 
-Hidden Markov models for sequential data have enjoyed a long history, gaining popularity with the widely influential tutorial of Rabiner~\cite{rabiner1989tutorial}. Specific to the work presented here, the use of regularization for HMM parameters received a general treatment in~\cite{MAP1994}, for both transition and emission parameters. Our work details a more specific version of the regularization, useful for state persistence. Neukirchen and Rigoll~\cite{neukirchen1999controlling} studied the use of regularization in HMMs for reducing parameter overfitting of emission distributions due to insufficient training data, but without an emphasis on inertial transitioning between states. Similarly, Johnson~\cite{Johnson07whydoesnt} proposed using Dirichlet priors on multinomial hidden Markov models as a means of enforcing sparse emission distributions. In contrast, Fox \emph{et al.}\ \cite{fox2011sticky} develop a Bayesian ``sticky'' HMM to provide inertial state persistence. They present a powerful method capable of learning a hidden Markov model without specifying the number of states or regularization strength beforehand, using a hierarchical Dirichlet process and truncated Gibbs sampling. Although our method is less powerful, requiring the number of states to be specified in advance, their method requires a more complex approach to learning the model. In contrast, our regularization only requires a small change to a single update equation, allowing drop-in regularization for standard Baum-Welch learning algorithms. 
+Hidden Markov models for sequential data have enjoyed a long history, gaining popularity as a result of the widely influential tutorial by Rabiner~\cite{rabiner1989tutorial}. Specific to the work presented here, the use of regularization for HMM parameters received a general treatment in~\cite{MAP1994}, for both transition and emission parameters. Our work details a more specific version of the regularization, useful for state persistence. Neukirchen and Rigoll~\cite{neukirchen1999controlling} studied the use of regularization in HMMs for reducing parameter overfitting of emission distributions due to insufficient training data, but without an emphasis on inertial transitioning between states. Similarly, Johnson~\cite{Johnson07whydoesnt} proposed using Dirichlet priors on multinomial hidden Markov models as a means of enforcing sparse emission distributions. 
+
+In contrast, Fox \emph{et al.}\ \cite{fox2011sticky} develop a Bayesian sticky HMM to provide inertial state persistence. They present a method capable of learning a hidden Markov model without specifying the number of states or regularization strength beforehand, using a hierarchical Dirichlet process and truncated Gibbs sampling. Although our method requires the number of states to be specified in advance, their method requires a more complex approach to learning the model and suffers from poor performance for time series with more than ten dimensions. In contrast, our regularization only requires a small change to a single update equation, allowing drop-in regularization for standard Baum-Welch learning algorithms, and performs well on datasets of moderate dimensionality. Furthermore, several hyperparameters for the Bayesian priors must be chosen along with a truncation limit, thus not fully removing the need for specification of parameters, and in fact exacerbating it, since the sticky HDP-HMM requires more parameters than the methods presented here. Our models only require the specification of two parameters, $K$ and $\zeta$, whereas the sticky HDP-HMM requires analogous truncation level $L$ and $\kappa$ parameters to be chosen, in addition to the hyperparameters on the model priors. We have shown that the inertial models are easily implemented, run efficiently, add almost no additional computation effort, and work well on data with over ten dimensions.
+
+Although the methods derived here are simple, they perform well and are computationally efficient. Their simplicity is thus a feature and not a bug. We find that while the two inertial regularization methods differ in derivation and final mathematical form, their performance is practically indistinguishable on the real-world data tested, allowing either to be used in practice.  The simplicity of the models thus pave the way for natural modifications and extensions, such as changing the form of the class conditional emission distributions to incorporate internal dynamics. Such extensions are the focus of future work.
+
+\section{Acknowledgments}
+
+The authors would like to thank Emily Fox and Erik Sudderth for their discussions, feedback and assistance with use of the HDP-HMM toolbox.
 
 \bibliographystyle{amsplain}
 \bibliography{references}

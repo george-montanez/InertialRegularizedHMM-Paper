@@ -63,10 +63,10 @@ to obtain
 \end{align}
 
 Using Lagrange multipliers, taking the derivative of (\ref{eq:main}) with respect to $A_{jk}$ and setting to the result to zero, we obtain the regularized maximum likelihood estimate for $A_{jk}$, namely
-\begin{align*}
+\begin{align}\label{eq:PSO-final}
     A_{jk} &= \frac{\sum_{t=2}^{T} \xi(z_{(t-1)k}, z_{tk}) + \sum_{t=2}^{T}{\mathbbm{1}(j = k)}\lambda[\gamma(z_{(t-1)k}) - \xi(z_{(t-1)k}, z_{tk})]}   
     { \sum_{t=2}^{T} \sum_{i=1}^{K} \left(\xi(z_{(t-1)j}, z_{ti}) + {\mathbbm{1}(j = i)}\lambda[\gamma(z_{(t-1)i}) - \xi(z_{(t-1)i}, z_{ti})]\right)}
-\end{align*}
+\end{align}
 where $\mathbbm{1}(\cdot)$ denotes the indicator function. The forward-backward algorithm can then be used for efficient computation of the $\gamma$ and $\xi$ values, as is the case for unregularized HMMs.
 
 Ignoring normalization, we see that

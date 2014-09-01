@@ -1,8 +1,13 @@
-\documentclass[12pt]{article}
-\usepackage{url,graphicx,tabularx,array,geometry,amsmath,amssymb,amsthm,bbm,textcomp,algorithm}
+\documentclass[letterpaper]{article}
+\usepackage{url,graphicx,tabularx,array,amsmath,amssymb,amsthm,bbm,textcomp,algorithm}
 \usepackage[noend]{algpseudocode}
-\usepackage{nips12submit_e,times}
-%\usepackage[sc]{mathpazo}
+\usepackage{aaai} 
+\usepackage{times} 
+\usepackage{helvet} 
+\usepackage{courier} 
+\setlength{\pdfpagewidth}{8.5in} 
+\setlength{\pdfpageheight}{11in}
+
 
 \newcommand{\unionf}{\bigcup_{n=1}^{\infty} \mathcal{F}_n}
 \newcommand{\F}{\mathcal{F}}
@@ -22,34 +27,31 @@
 \def\BState{\State\hskip-\ALG@thistlm}
 \makeatother
 
-\nipsfinalcopy 
-
-\begin{document}
+\pdfinfo{
+/Title (Segmenting Multivariate Time Series with Inertial Hidden Markov Models)
+/Author (George D. Montanez, Saeed Amizadeh, Nikolay Laptev)
+/Keywords (segmenting time series, unsupervised learning, hidden markov models, state persistence), inertial HMM)
+}
 
 \title{Segmenting Multivariate Time Series with Inertial Hidden Markov Models}
 
 %...............................................................................
 %                                   Authors
 %...............................................................................
-\author{
-George D. Monta\~nez \\
+
+\author{George D. Monta\~nez \\
 Machine Learning Department\\
 Carnegie Mellon University\\
 Pittsburgh, PA USA\\
 \texttt{gmontane@cs.cmu.edu} \\
-\And    
-Saeed Amizadeh\\
-Media Sciences, Yahoo! Labs\\
-Yahoo!\\
-Sunnyvale, CA USA\\
-\texttt{amizadeh@yahoo-inc.com} \\
 \And
-Nikolay Laptev \\
+Saeed Amizadeh \and Nikolay Laptev\\
 Media Sciences, Yahoo! Labs\\
 Yahoo!\\
 Sunnyvale, CA USA\\
-\texttt{nlaptev@yahoo-inc.com} \\
-}
+\texttt{\{amizadeh,nlaptev\}@yahoo-inc.com}}
+
+\begin{document}
 
 \maketitle
 
@@ -91,7 +93,7 @@ The output of the process is a list of integer tuples $(t, k)$, where $1 \leq t 
 
 \subsection{Inertial Hidden Markov Models}
 
-Hidden Markov models~\cite{rabiner1989tutorial} (HMMs) are a class of long-studied probabilistic models well-suited for sequential data. As a starting point for developing our inertial HMMs, we begin a standard $K$-state HMM with Gaussian emission densities. HMMs (locally) maximize the likelihood of the data, but typically do not guarantee slow inertial transitioning among states. The number of states must be specified in advance, but no other parameters need to be given, as the remaining model parameters are all estimated directly from the data. 
+Hidden Markov models (HMMs) are a class of long-studied probabilistic models well-suited for sequential data~\cite{rabiner1989tutorial}. As a starting point for developing our inertial HMMs, we begin a standard $K$-state HMM with Gaussian emission densities. HMMs (locally) maximize the likelihood of the data, but typically do not guarantee slow inertial transitioning among states. The number of states must be specified in advance, but no other parameters need to be given, as the remaining model parameters are all estimated directly from the data. 
 
 To accommodate the inertial transition requirement, we derive two different methods of enforcing state-persistence in HMMs. Both methods alter the probabilistic form of the complete data joint likelihood function, which result in altered transition matrix update equations. The resulting update equations share a related mathematical structure and, as is shown in Section~\ref{sec:Results}, have similar performance on the datasets tested. 
 
@@ -111,7 +113,8 @@ where the $\eta_{jk}$ are free parameters and $A_{jk}$ is the transition probabi
 and the log-likelihood is
 \begin{align*}
 \ell(\mathbf{X}, \mathbf{Z} ; \mathbf{\theta}, \eta) 
-&\propto \sum_{i=1}^{K}\sum_{i=1}^{K} (\eta_{jk} - 1)\log A_{jk} + \log P(\mathbf{z}_{1}; \theta) + \sum_{t=1}^{T}\log P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) + \sum_{t=2}^{T}\log P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta}).
+&\propto \sum_{i=1}^{K}\sum_{i=1}^{K} (\eta_{jk} - 1)\log A_{jk} + \log P(\mathbf{z}_{1}; \theta) \\
+&+ \sum_{t=1}^{T}\log P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) + \sum_{t=2}^{T}\log P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta}).
 \end{align*}
 
 MAP estimation is then used in the M-step of the EM algorithm, to update the transition probability matrix. Maximizing, with appropriate Lagrange multiplier constraints, we obtain the update equation for the transition matrix, 
@@ -129,7 +132,101 @@ where $\mathbbm{1}(\cdot)$ denotes the indicator function.
 
 \subsubsection{Inertial Regularization via Pseudo-observations}
 
-\input{inertial_derivation.tex}
+We now derive a second method of regularizing the state transitions, where we alter the HMM likelihood function to include a fictional observation, $V$. This is a binary random variable indicating that a transition was chosen at random from among all transitions, according to some distribution, and that the transition observed was a self-transition. Thus, we view the transitions as being partitioned into two sets, self-transitions and non-self-transitions, and we draw a member of the self-transition set according to a Bernoulli distribution governed by some parameter $p$. Given a latent state sequence $\mathbf{Z}$, with transitions chosen according to transition matrix $\mathbf{A}$, we define $p$ as a function of both $\mathbf{Z}$ and $\mathbf{A}$. We would like $p$ to have two properties: 1) it should increase with increasing $\sum_k A_{kk}$ (probability of self-transitions) and 2) it should increase as the number of self-transitions in $\mathbf{Z}$ increases. This will allow us to encourage self-transitions as a simple consequence of maximizing the likelihood of our observations.
+
+We begin with a version of $p$ based on a penalization constant $0 < \epsilon < 1$ that scales appropriately with the number of self-transitions. If we raise $\epsilon$ to a large positive power, the resulting $p$ will decrease. Thus, we define $p$ as $\epsilon$ raised to the number of non-self-transitions in the state transition sequence, so that the probability of selecting a self-transition increases as the number of non-self-transitions decreases. Using the fact that the number of non-self-transitions equals $(T-1) - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}$, we obtain 
+\begin{align}
+    p &= \epsilon^\text{\tiny NUM.\ OF NON-SELF-TRANSITIONS}\\
+      &= \epsilon^{(T-1) - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}} \notag\\
+      &= \epsilon^{\sum^{T}_{t=2}1 - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}} \notag\\
+      &= \epsilon^{\sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k} - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}} \notag\\
+      &= \epsilon^{\sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k} - z_{(t-1)k}z_{tk}} \notag\\
+      &= \prod^{T}_{t=2}\prod_{k=1}^{K}\epsilon^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}. \label{eq:eps-0}
+\end{align}
+
+Since $\epsilon$ is arbitrary, we choose $\epsilon = A_{kk}$, to allow $p$ to scale appropriately with increasing probability of self-transition. We therefore arrive at
+\begin{align*}
+    p &= \prod^{T}_{t=2}\prod^{K}_{k=1}A_{kk}^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}.
+\end{align*}
+Thus, we define $p$ as a computable function of $\mathbf{Z}$ and $\mathbf{A}$. Defining $p$ in this deterministic manner is equivalent to choosing the parameter value from a degenerate probability distribution that places a single point mass at the value computed, allowing us to easily obtain a posterior distribution on $V$. Furthermore, we see that the function increases as the number of self-transitions increases, since $A_{kk} \leq 1$ for all $k$, and $p$ will generally increase as $\sum_k A_{kk}$ increases. Thus, we obtain a parameter $p \in (0,1]$ that satisfies all our desiderata.
+
+With $p$ in hand, we say that $V$ is drawn according to the Bernoulli distribution, Bern($p$), and we observe $V = 1$ (i.e., a member of the self-transition set was chosen). Since $P(V = 1|\mathbf{Z};\mathbf{A}) = p$, we have
+\begin{align*}
+    P(V = 1|\mathbf{Z}; \mathbf{A}) &= \prod^{T}_{t=2}\prod^{K}_{k=1}A_{kk}^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}.
+\end{align*}
+To gain greater control over the strength of regularization, let $\lambda$ be a positive integer and $\mathbf{V}$ be an $\lambda$-length sequence of pseudo-observations, drawn i.i.d.\ according to Bern($p$). Thus, 
+\begin{align*}
+    P(\mathbf{V} = \mathbf{1}|\mathbf{Z}; \mathbf{A}) &= \left[\prod^{T}_{t=2}\prod^{K}_{k=1}A_{kk}^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}\right]^\lambda
+\end{align*}
+where $\mathbf{1}$ denotes the all-ones sequence of length $\lambda$.
+
+Clearly $\mathbf{V}$ is conditionally independent of $\mathbf{X}$ given the latent state sequence $\mathbf{Z}$. We now consider the joint density over $\mathbf{X}$, $\mathbf{V}$, and $\mathbf{Z}$, making use of our conditional independence assumption. We parameterize the joint density by $\mathbf{\theta} = \{\mathbf{\pi},\mathbf{A}, \mathbf{\phi}\}$, which are the start-state probabilities, state transition matrix and emission parameters, respectively. We have
+\begin{align*}
+    P(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; \mathbf{\theta}) 
+    &= P(\mathbf{V}|\mathbf{Z}; \mathbf{\theta}) P(\mathbf{z}_{1} ; \theta) \\
+    &\times \left[\prod_{t=1}^{T}P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta})\right]\left[\prod_{t=2}^{T}P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta})\right]
+\end{align*}
+and, taking the log of the likelihood,
+\begin{align*}
+    \ell(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; \mathbf{\theta}) 
+    &= \log P(\mathbf{V}|\mathbf{Z}; \mathbf{\theta}) + \log P(\mathbf{z}_{1}; \theta) \\
+    &+ \sum_{t=1}^{T}\log P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) \\
+    &+ \sum_{t=2}^{T}\log P(\mathbf{z}_t|\mathbf{z}_{t-1};\mathbf{\theta}).
+\end{align*}
+
+Noting that 
+\begin{align*}
+    P(\mathbf{z}_{1}; \theta) &= \prod_{k=1}^{K}\pi_{k}^{z_{1k}}, \\
+    P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) &= \prod_{k=1}^{K} P(\mathbf{x}_t ; \mathbf{\phi}_k)^{z_{tk}},\text{ and }\\ 
+    P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta}) &= \prod_{k=1}^{K}\prod_{j=1}^{K}A_{jk}^{z_{(t-1)j}z_{tk}},
+\end{align*}
+substituting into $\ell(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; \mathbf{\theta})$ and letting 
+\[
+    \ell_1 = \ell(\mathbf{X}, \mathbf{V}=\mathbf{1}, \mathbf{Z} ; \mathbf{\theta})
+\]
+we obtain
+\begin{align*}
+    \ell_1
+    &= \sum^{T}_{t=2}\sum^{K}_{k=1}\lambda[z_{(t-1)k} - z_{(t-1)k}z_{tk}]\log A_{kk} \notag\\
+    &+ \sum_{k=1}^{K}{z_{1k}}\log \pi_{k} \notag\\
+    &+ \sum_{t=1}^{T}\sum_{k=1}^{K} z_{tk}\log P(\mathbf{x}_t ; \mathbf{\phi}_k) \notag\\
+    &+ \sum_{t=2}^{T}\sum_{k=1}^{K}\sum_{j=1}^{K}[z_{(t-1)j}z_{tk}]\log A_{jk}.
+\end{align*}
+
+Following Bishop~\cite{bishop2007pattern}, we define
+\begin{align*}
+    \gamma(z_{tk}) &= \mathbb{E}[z_{tk}] = \sum_{\mathbf{z}}\gamma(\mathbf{z})z_{tk} \\
+    \xi(z_{(t-1)j}, z_{tk}) &= \mathbb{E}[z_{(t-1)j}z_{tk}] = \sum_{\mathbf{z}}\gamma(\mathbf{z})z_{(t-1)j}z_{tk}
+\end{align*}
+to obtain
+\begin{align}\label{eq:main}
+    \mathbb{E}_{\mathbf{Z}}[\ell_1]
+    &= \sum^{T}_{t=2}\sum^{K}_{k=1}\lambda[\gamma(z_{(t-1)k})-\xi(z_{(t-1)k}, z_{tk})]\log A_{kk} \notag\\
+    &+ \sum_{k=1}^{K}\gamma(z_{1k})\log \pi_{k} \notag\\
+    &+ \sum_{t=1}^{T}\sum_{k=1}^{K} \gamma(z_{tk})\log P(\mathbf{x}_t ; \mathbf{\phi}_k) \notag\\
+    &+ \sum_{t=2}^{T}\sum_{k=1}^{K}\sum_{j=1}^{K}\xi(z_{(t-1)j}, z_{tk})\log A_{jk}.
+\end{align}
+
+Using Lagrange multipliers, taking the derivative of (\ref{eq:main}) with respect to $A_{jk}$ and setting to the result to zero, we obtain the regularized maximum likelihood estimate for $A_{jk}$, namely
+\begin{align}\label{eq:PSO-final}
+    A_{jk} &= \frac{B_{j,k,T} + {\mathbbm{1}(j = k)}C_{j,k,T}} 
+                   {\sum_{i=1}^{K} B_{j,i,T} + C_{j,j,T}}
+\end{align}
+where 
+\begin{align}\label{eq:PSO-final-C-part}
+    B_{j,k,T} &= \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk}), \notag\\
+    C_{j,k,T} &= \lambda\left[\sum_{t=2}^{T}[\gamma(z_{(t-1)k}) - \xi(z_{(t-1)j}, z_{tk})]\right] 
+\end{align}
+and $\mathbbm{1}(\cdot)$ denotes the indicator function. The forward-backward algorithm can then be used for efficient computation of the $\gamma$ and $\xi$ values, as is the case for unregularized HMMs.
+
+Ignoring normalization, we see that
+\begin{align*}
+    A_{jk} &\propto \begin{cases} 
+                B_{j,k,T} + C_{j,j,T} & \mbox{if } j=k \\ 
+                B_{j,k,T} & \mbox{otherwise.}
+              \end{cases}
+\end{align*}
+Examining the $C_{j,j,T}$ term, we see that $\lambda$ is a multiplier of additional mass contributions for self-transitions, where the contributions are the difference between $\gamma(z_{(t-1)j})$ and $\xi(z_{(t-1)j}, z_{tj})$. These two quantities represent, respectively, the expectation of being in a state $j$ at time $t-1$ and the expectation of remaining there in the next time step. The larger $\lambda$ or the larger the difference between arriving at a state and remaining there, the greater the additional mass given to self-transition. 
 
 \subsubsection{Scale-Free Regularization}
 
@@ -154,23 +251,7 @@ We desire models where the regularization strength is scale-free, having roughly
     A_{jk} &= \frac{((T - 1)^{\zeta}-1){\mathbbm{1}(j = k)} + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
     {((T - 1)^{\zeta} - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}.
 \end{align}
-This preserves the effect of regularization as $T$ increases, and $\zeta$ becomes our new regularization parameter, controlling the strength of the regularization. For consistency, we also re-parameterize Equation~\ref{eq:PSO-final} using the same form, i.e., $\lambda = (T-1)^\zeta$.
-
-%Figures~\ref{fig:short-real-data-scale-free} and \ref{fig:long-real-data-scale-free} shows the scale-free regularized result on both a short and long sequence, using the same regularization parameter. The parameter was chosen in reference to the short sequence, selecting the smallest parameter that still provided correct segmentation. As can be seen, the regularization strength is sufficient for the long sequence as well, illustrating the effectiveness of a scale-free parameterization.
-%
-%\begin{figure}[htbp]
-%  \caption{Human activities accelerometer data, short sequence, with minimum scale-free regularization parameter.}
-%  \centering
-%    \includegraphics[width=.8\linewidth]{images/MAP_SCALE_FREE_results_hard_activity_short_3_states.pdf}
-%    \label{fig:short-real-data-scale-free}
-%\end{figure}
-%
-%\begin{figure}[htbp]
-%  \caption{Human activities accelerometer data, long sequence, with minimum scale-free regularization parameter chosen in regards to short sequence. Correct segmentation is maintained despite the length of the time series increasing by an order of magnitude.}
-%  \centering
-%    \includegraphics[width=.8\linewidth]{images/MAP_SCALE_FREE_results_hard_activity_long_3_states.pdf}
-%    \label{fig:long-real-data-scale-free}
-%\end{figure}
+This preserves the effect of regularization as $T$ increases, and $\zeta$ becomes our new regularization parameter, controlling the strength of the regularization. For consistency, we also re-parameterize Equation~\ref{eq:PSO-final-C-part} using the same form, i.e., $\lambda = (T-1)^\zeta$.
 
 \subsubsection{Towards Parameter-Free Regularization}\label{sec:param-free}
 
@@ -189,9 +270,15 @@ Hidden Markov models traditionally use batch methods for learning model paramete
 
 \subsubsection{Parameter Update Equations}
 
-Define $D_{T,i} := ((T-1)^\zeta -1) + \sum_{t=2}^{T}\sum_{k=1}^{K} \xi(z_{(t-1)i}, z_{tk})$. The recurrence for $D_{T,i}$ is
+Define 
+\[
+   D_{T,i} := ((T-1)^\zeta -1) + \sum_{t=2}^{T}\sum_{k=1}^{K} \xi(z_{(t-1)i}, z_{tk}).
+\]
+The recurrence for $D_{T,i}$ is
 \begin{align*}
-    D_{T,i} &= [(T-1)^\zeta - (T-2)^\zeta] +  \sum_{k=1}^{K} \xi(z_{(T-1)i}, z_{Tk}) + D_{(T-1), i}
+    D_{T,i} &= [(T-1)^\zeta - (T-2)^\zeta] \\
+            &+ \sum_{k=1}^{K} \xi(z_{(T-1)i}, z_{Tk}) \\
+            &+ D_{(T-1), i}
 \end{align*}
 where $T$ is the current time-step. Since $T$ is both the current and final time-step, we have $\beta(z_{T,k}) = 1$ for $k = 1, \ldots, K$, and thus
 \begin{align*}
@@ -207,16 +294,19 @@ where
 
 An efficient online update equation for the regularized transition matrix is then given by
 \begin{align*}
-    A_{ij}^{(T)} &= \frac{\xi(z_{(T-1)i}, z_{Tj})}{D_{T,i}} + \frac{\mathbbm{1}(i = j)[(T-1)^\zeta - (T-2)^\zeta]}{D_{T,i}} + \frac{D_{(T-1), i}}{D_{T,i}}A_{ij}^{(T-1)}.
+    A_{ij}^{(T)} &= \frac{\xi(z_{(T-1)i}, z_{Tj})}{D_{T,i}} \\
+                 &+ \frac{\mathbbm{1}(i = j)[(T-1)^\zeta - (T-2)^\zeta]}{D_{T,i}} \\
+                 &+ \frac{D_{(T-1), i}}{D_{T,i}}A_{ij}^{(T-1)}.
 \end{align*}
 
-Also, because $\beta(z_{T,k}) = 1$, we have $\gamma(z_{tk}) = \alpha(z_{tk}) / \sum_{i=1}^{K}\alpha(z_{ti})$. The corresponding incremental update equations for a Gaussian emission model (as reported in~\cite{stenger2001}) are 
+Given that $\beta(z_{T,k}) = 1$, we have $\gamma(z_{tk}) = \alpha(z_{tk}) / \sum_{i=1}^{K}\alpha(z_{ti})$ for the incremental update. The corresponding incremental update equations for a Gaussian emission model (as reported in~\cite{stenger2001}) are 
 \begin{align*}
     \mathbf{\mu}_{j}^{(T)} &= \frac{\sum_{t=1}^{T-1}\gamma(z_{tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\mathbf{\mu}_{j}^{(T-1)} + \frac{\gamma(z_{Tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\mathbf{x}_T
 \end{align*}
 and
 \begin{align*}
-    \mathbf{S}_j^{(T)} &= \frac{\sum_{t=1}^{T-1}\gamma(z_{tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\mathbf{S}_j^{(T-1)} + \frac{\gamma(z_{Tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\left(\mathbf{x}_T - \mathbf{\mu}_j^{(T)}\right)\left(\mathbf{x}_T - \mathbf{\mu}_j^{(T)}\right)'
+    \mathbf{S}_j^{(T)} &= \frac{\sum_{t=1}^{T-1}\gamma(z_{tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\mathbf{S}_j^{(T-1)} \\
+                       &+ \frac{\gamma(z_{Tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\left(\mathbf{x}_T - \mathbf{\mu}_j^{(T)}\right)\left(\mathbf{x}_T - \mathbf{\mu}_j^{(T)}\right)'
 \end{align*}
 where $(\cdot)'$ denotes the matrix transpose operation and $\mathbf{S}_j$ is the covariance matrix for state $j$.
 
@@ -232,8 +322,8 @@ The estimates are then updated for each new observation, using the update equati
 \begin{algorithm}
 \caption{}
 \begin{algorithmic}[1]
-\Procedure{Incremental Learning of Regularized HMM}{}
-\State Batch learn initial parameter estimates from short segment of data.
+\Procedure{Incremental Learning}{}
+\State Batch learn initial parameter estimates.
 \State Compute $D_{2,i}$ and $A_{ij}^{(2)}$ for all $i,j$.
 \BState For $T > 2$:
 \State Compute $\alpha$ values for observation at time $T$.
@@ -369,21 +459,27 @@ The human activity task highlighted an issue with using standard HMMs for segmen
 
 While the sticky HDP-HMM performed moderately well on the low-dimensional synthetic dataset, the default parameters produced poor performance on the real-world accelerometer data. It remains possible that different settings of hyperparameters may improve performance, but the cost of a combinatorial search through hyperparameter space combined with the lengthy computation time of the HDP-HMM method prohibited exhaustive exploration of the space. These results show, at very least, a strong dependence on hyperparameter settings for acceptable performance. In contrast, the inertial HMM methods presented here make use of a simple heuristic for automatically selecting the strength parameter $\zeta$, which resulted in excellent performance on both datasets without the need for hand-tuning several hyperparameters. 
 
-One advantage of the sticky HDP-HMM over the methods presented here is the ability to segment a time series without knowing the number of states beforehand, whereas we require the number of states to be specified for our inertial methods. Thus, while the sticky HDP-HMM has poor performance on the two segmentation tasks, there exists tasks for which the HDP-HMM method is better suited (e.g., when the correct number of states is unknown).
+One advantage of the sticky HDP-HMM over the methods presented here is the ability to segment a time series without knowing the number of states beforehand, whereas we require the number of states to be specified for our inertial methods. Thus, while the sticky HDP-HMM has poor performance on the two segmentation tasks, there exist tasks for which the HDP-HMM method may be better suited (e.g., when the correct number of states is unknown).
 
-\section{Related Work and Conclusions}
+\section{Related Work}
 
 Hidden Markov models for sequential data have enjoyed a long history, gaining popularity as a result of the widely influential tutorial by Rabiner~\cite{rabiner1989tutorial}. Specific to the work presented here, the use of regularization for HMM parameters received a general treatment in~\cite{MAP1994}, for both transition and emission parameters. Our work details a more specific version of the regularization, useful for state persistence. Neukirchen and Rigoll~\cite{neukirchen1999controlling} studied the use of regularization in HMMs for reducing parameter overfitting of emission distributions due to insufficient training data, but without an emphasis on inertial transitioning between states. Similarly, Johnson~\cite{Johnson07whydoesnt} proposed using Dirichlet priors on multinomial hidden Markov models as a means of enforcing sparse emission distributions. 
 
 In contrast, Fox \emph{et al.}\ \cite{fox2011sticky} develop a Bayesian sticky HMM to provide inertial state persistence. They present a method capable of learning a hidden Markov model without specifying the number of states or regularization strength beforehand, using a hierarchical Dirichlet process and truncated Gibbs sampling. Although our method requires the number of states to be specified in advance, their method requires a more complex approach to learning the model and suffers from poor performance for time series with more than ten dimensions. In contrast, our regularization only requires a small change to a single update equation, allowing drop-in regularization for standard Baum-Welch learning algorithms, and performs well on datasets of moderate dimensionality. Furthermore, several hyperparameters for the Bayesian priors must be chosen along with a truncation limit, thus not fully removing the need for specification of parameters, and in fact exacerbating it, since the sticky HDP-HMM requires more parameters than the methods presented here. Our models only require the specification of two parameters, $K$ and $\zeta$, whereas the sticky HDP-HMM requires analogous truncation level $L$ and $\kappa$ parameters to be chosen, in addition to the hyperparameters on the model priors. We have shown that the inertial models are easily implemented, run efficiently, add almost no additional computation effort, and work well on data with over ten dimensions.
 
-Although the methods derived here are simple, they perform well and are computationally efficient. Their simplicity is thus a feature and not a bug. We find that while the two inertial regularization methods differ in derivation and final mathematical form, their performance is similar on the datasets tested, allowing either to be used in practice.  The simplicity of the models thus pave the way for natural modifications and extensions, such as changing the form of the class conditional emission distributions to incorporate internal dynamics. Such extensions are the focus of future work.
+\section{Conclusions}
+
+To segment multivariate time series data in an unsupervised manner, we derive two modified forms of hidden Markov model that effectively enforce state persistence. Although the methods derived here are simple, they perform well and are computationally efficient. Their simplicity is thus a feature and not a bug. We find that while the two inertial regularization methods differ in derivation and final mathematical form, their performance is similar on the datasets tested, allowing either to be used in practice. 
+
+We also derived incremental learning rules for the inertial MAP HMM, as well as presenting a simple heuristic method for automated regularization-strength parameter selection. Our experiments on synthetic and real-world datasets show the effectiveness of our methods, giving large improvements in performance over standard HMMs and the sticky HDP-HMM of Fox \emph{et al.}~\cite{fox2011sticky}.
+
+ The simplicity of the models pave the way for natural modifications and extensions, such as changing the form of the class conditional emission distributions to incorporate internal dynamics. Such extensions are the focus of future work.
 
 \section{Acknowledgments}
 
 The authors would like to thank Emily Fox and Erik Sudderth for their discussions, feedback and assistance with use of the HDP-HMM toolbox.
 
-\bibliographystyle{amsplain}
+\bibliographystyle{aaai}
 \bibliography{references}
 
 \end{document}

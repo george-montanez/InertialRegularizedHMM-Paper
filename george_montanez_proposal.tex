@@ -410,14 +410,14 @@ To evaluate the HDP-HMM, we performed five trials one each example in the test d
 \resizebox{1.0\linewidth}{!}{
 \begin{tabular}{|lrrrrrr|}
 \hline
-\textbf{Method}                   & \textbf{Accuracy} & \textbf{SNR}  & \textbf{ASNR}     & \textbf{SND}  & \textbf{VOI}    & \textbf{Perfect}  \\ \hline
+\textbf{Method}                   & \textbf{Acc.} & \textbf{SNR}  & \textbf{ASNR}     & \textbf{SND}  & \textbf{VOI}    & \textbf{Perfect}  \\ \hline
 Sticky HDP-HMM ($\kappa = 10$)    & 0.85              & 0.59          & 3.50              & 2.79          & 0.56            & 0/100                          \\ 
 Standard HMM                      & 0.87              & 172.20        & 172.20            & 765.91        & 0.62            & 0/100                          \\ 
 MAP HMM ($\zeta = 2.28$)          & 0.99              & 0.96          & 1.13              & 0.51          & 0.07            & 2/100                          \\ 
 Inertial PsO HMM ($\zeta = 8.19$) & 0.99              & 0.87          & 1.43              & 1.15          & 0.14            & 1/100                          \\ \hline
 \multicolumn{7}{l}{\begin{tabular}[c]{@{}l@{}}
     \vspace{0.05em}\\
-    \textbf{Accuracy} = Average Accuracy (value of 1.0 is best)\\ 
+    \textbf{Acc.} = Average Accuracy (value of 1.0 is best)\\ 
     \textbf{SNR} = Average Segment Number Ratio (value of 1.0 is best)\\ 
     \textbf{ASNR} = Average Absolute Segment Number Ratio (value of 1.0 is best)\\ 
     \textbf{SND} = Average Segment Number Difference (value of 0.0 is best)\\ 
@@ -435,7 +435,7 @@ Results for the synthetic dataset are shown in Table~\ref{tab:results-synthetic}
 \resizebox{1.0\linewidth}{!}{
 \begin{tabular}{|lrrrrrr|}
 \hline
-\textbf{Method}                   & \textbf{Accuracy} & \textbf{SNR}  & \textbf{ASNR}     & \textbf{SND}  & \textbf{VOI}    & \textbf{Perfect}  \\ \hline
+\textbf{Method}                   & \textbf{Acc.} & \textbf{SNR}  & \textbf{ASNR}     & \textbf{SND}  & \textbf{VOI}    & \textbf{Perfect}  \\ \hline
 Sticky HDP-HMM ($\kappa = 100$)   & 0.60              & 0.75          &  4.68             & 5.03          & 0.95            & 0/100                           \\ 
 Standard HMM                      & 0.79              & 134.59        & 134.59            & 584.16        & 0.38            & 9/100                          \\ 
 MAP HMM ($\zeta = 33.5$)          & \textbf{0.94}     & 1.28          & 1.43              & 2.62          & \textbf{0.14}   & \textbf{48/100}                 \\ 

@@ -28,13 +28,13 @@ where $\mathbf{1}$ denotes the all-ones sequence of length $\lambda$.
 
 Clearly $\mathbf{V}$ is conditionally independent of $\mathbf{X}$ given the latent state sequence $\mathbf{Z}$. We now consider the joint density over $\mathbf{X}$, $\mathbf{V}$, and $\mathbf{Z}$, making use of our conditional independence assumption. We parameterize the joint density by $\mathbf{\theta} = \{\mathbf{\pi},\mathbf{A}, \mathbf{\phi}\}$, which are the start-state probabilities, state transition matrix and emission parameters, respectively. We have
 \begin{align*}
-    P(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; \mathbf{\theta}) =&\\
-    P(\mathbf{V}|\mathbf{Z}; \mathbf{\theta}) P(\mathbf{z}_{1} ; \theta) \\\left[\prod_{t=1}^{T}P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta})\right]\left[\prod_{t=2}^{T}P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta})\right]
+    P(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; \mathbf{\theta}) 
+    &= P(\mathbf{V}|\mathbf{Z}; \mathbf{\theta}) P(\mathbf{z}_{1} ; \theta) \left[\prod_{t=1}^{T}P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta})\right]\left[\prod_{t=2}^{T}P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta})\right]
 \end{align*}
 and, taking the log of the likelihood,
 \begin{align*}
     \ell(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; \mathbf{\theta}) 
-    &=\\ \log P(\mathbf{V}|\mathbf{Z}; \mathbf{\theta}) +\\ \log P(\mathbf{z}_{1}; \theta) +\\ \sum_{t=1}^{T}\log P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) +\\ \sum_{t=2}^{T}\log P(\mathbf{z}_t|\mathbf{z}_{t-1};\mathbf{\theta}).
+    &= \log P(\mathbf{V}|\mathbf{Z}; \mathbf{\theta}) + \log P(\mathbf{z}_{1}; \theta) + \sum_{t=1}^{T}\log P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) + \sum_{t=2}^{T}\log P(\mathbf{z}_t|\mathbf{z}_{t-1};\mathbf{\theta}).
 \end{align*}
 
 Noting that 
@@ -46,38 +46,33 @@ Noting that
 and substituting into $\ell(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; \mathbf{\theta})$ we obtain
 \begin{align*}
     \ell(\mathbf{X}, \mathbf{V}=\mathbf{1}, \mathbf{Z} ; \mathbf{\theta}) 
-    &=\\ \sum^{T}_{t=2}\sum^{K}_{k=1}\lambda[z_{(t-1)k} - z_{(t-1)k}z_{tk}]\log A_{kk} \\+ \sum_{k=1}^{K}{z_{1k}}\log \pi_{k} \notag\\
-   \\+ \sum_{t=1}^{T}\sum_{k=1}^{K} z_{tk}\log P(\mathbf{x}_t ; \mathbf{\phi}_k) \\+ \sum_{t=2}^{T}\sum_{k=1}^{K}\sum_{j=1}^{K}[z_{(t-1)j}z_{tk}]\log A_{jk}.
+    &= \sum^{T}_{t=2}\sum^{K}_{k=1}\lambda[z_{(t-1)k} - z_{(t-1)k}z_{tk}]\log A_{kk} + \sum_{k=1}^{K}{z_{1k}}\log \pi_{k} \notag\\
+    &+ \sum_{t=1}^{T}\sum_{k=1}^{K} z_{tk}\log P(\mathbf{x}_t ; \mathbf{\phi}_k) + \sum_{t=2}^{T}\sum_{k=1}^{K}\sum_{j=1}^{K}[z_{(t-1)j}z_{tk}]\log A_{jk}.
 \end{align*}
 
 Following Bishop~\cite{bishop2007pattern}, we define
 \begin{align*}
     \gamma(z_{tk}) &= \mathbb{E}[z_{tk}] = \sum_{\mathbf{z}}\gamma(\mathbf{z})z_{tk} \\
-    \xi(z_{(t-1)j}, z_{tk}) &= \mathbb{E}[z_{(t-1)j}z_{tk}] \\= \sum_{\mathbf{z}}\gamma(\mathbf{z})z_{(t-1)j}z_{tk}
+    \xi(z_{(t-1)j}, z_{tk}) &= \mathbb{E}[z_{(t-1)j}z_{tk}] = \sum_{\mathbf{z}}\gamma(\mathbf{z})z_{(t-1)j}z_{tk}
 \end{align*}
 to obtain
 \begin{align}\label{eq:main}
-    \mathbb{E}_{\mathbf{Z}}[\ell(\mathbf{X}, \mathbf{V}=\mathbf{1}, \mathbf{Z} ; \mathbf{\theta})] 
-    &= \\ \nonumber
-     \sum^{T}_{t=2}\sum^{K}_{k=1}\lambda[\gamma(z_{(t-1)k})-\xi(z_{(t-1)k}, z_{tk})]\log A_{kk} \\ \nonumber
-     + \sum_{k=1}^{K}\gamma(z_{1k})\log \pi_{k} \notag\\ \nonumber
-    + \sum_{t=1}^{T}\sum_{k=1}^{K} \gamma(z_{tk})\log P(\mathbf{x}_t ; \mathbf{\phi}_k) \\ \nonumber
-    + \sum_{t=2}^{T}\sum_{k=1}^{K}\sum_{j=1}^{K}\xi(z_{(t-1)j}, z_{tk})\log A_{jk}.
+    \mathbb{E}_{\mathbf{Z}}[\ell(\mathbf{X}, \mathbf{V}=\mathbf{1}, \mathbf{Z} ; \mathbf{\theta})]
+    &= \sum^{T}_{t=2}\sum^{K}_{k=1}\lambda[\gamma(z_{(t-1)k})-\xi(z_{(t-1)k}, z_{tk})]\log A_{kk} + \sum_{k=1}^{K}\gamma(z_{1k})\log \pi_{k} \notag\\
+    &+ \sum_{t=1}^{T}\sum_{k=1}^{K} \gamma(z_{tk})\log P(\mathbf{x}_t ; \mathbf{\phi}_k) + \sum_{t=2}^{T}\sum_{k=1}^{K}\sum_{j=1}^{K}\xi(z_{(t-1)j}, z_{tk})\log A_{jk}.
 \end{align}
 
 Using Lagrange multipliers, taking the derivative of (\ref{eq:main}) with respect to $A_{jk}$ and setting to the result to zero, we obtain the regularized maximum likelihood estimate for $A_{jk}$, namely
-{\tiny
 \begin{align}\label{eq:PSO-final}
     A_{jk} &= \frac{\sum_{t=2}^{T} \xi(z_{(t-1)k}, z_{tk}) + \sum_{t=2}^{T}{\mathbbm{1}(j = k)}\lambda[\gamma(z_{(t-1)k}) - \xi(z_{(t-1)k}, z_{tk})]}   
     { \sum_{t=2}^{T} \sum_{i=1}^{K} \left(\xi(z_{(t-1)j}, z_{ti}) + {\mathbbm{1}(j = i)}\lambda[\gamma(z_{(t-1)i}) - \xi(z_{(t-1)i}, z_{ti})]\right)}
 \end{align}
-}%
 where $\mathbbm{1}(\cdot)$ denotes the indicator function. The forward-backward algorithm can then be used for efficient computation of the $\gamma$ and $\xi$ values, as is the case for unregularized HMMs.
 
 Ignoring normalization, we see that
 \begin{align*}
     A_{jk} &\propto \begin{cases} 
-                \sum_{t=2}^{T} \xi(z_{(t-1)k}, z_{tk}) \\+ \lambda\sum_{t=2}^{T}[\gamma(z_{(t-1)k}) \\- \xi(z_{(t-1)k}, z_{tk})] & \mbox{if } j=k \\ 
+                \sum_{t=2}^{T} \xi(z_{(t-1)k}, z_{tk}) + \lambda\sum_{t=2}^{T}[\gamma(z_{(t-1)k}) - \xi(z_{(t-1)k}, z_{tk})] & \mbox{if } j=k \\ 
                 \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk}) & \mbox{otherwise.}
               \end{cases}
 \end{align*}

@@ -1,19 +1,8 @@
-\documentclass[letterpaper]{article}
-\usepackage{aaai}
-\usepackage{times}
-\usepackage{helvet}
-\usepackage{courier}
-\frenchspacing
-\setlength{\pdfpagewidth}{8.5in}
-\setlength{\pdfpageheight}{11in}
+\documentclass[12pt]{article}
 \usepackage{url,graphicx,tabularx,array,geometry,amsmath,amssymb,amsthm,bbm,textcomp,algorithm}
 \usepackage[noend]{algpseudocode}
+\usepackage{nips12submit_e,times}
 %\usepackage[sc]{mathpazo}
-
-\pdfinfo{
-/Title (Segmenting Multivariate Time Series with Inertial Hidden Markov Models)
-/Author (George D. Monta\~nez, Saeed Amizadeh, Nikolay Laptev)}
-\setcounter{secnumdepth}{0} 
 
 \newcommand{\unionf}{\bigcup_{n=1}^{\infty} \mathcal{F}_n}
 \newcommand{\F}{\mathcal{F}}
@@ -33,27 +22,31 @@
 \def\BState{\State\hskip-\ALG@thistlm}
 \makeatother
 
+\nipsfinalcopy 
+
 \begin{document}
 
-\title{Segmenting Multivariate Time Series with\\Inertial Hidden Markov Models}
+\title{Segmenting Multivariate Time Series with Inertial Hidden Markov Models}
 
 %...............................................................................
 %                                   Authors
 %...............................................................................
 \author{
 George D. Monta\~nez \\
-%Machine Learning Department\\
+Machine Learning Department\\
 Carnegie Mellon University\\
 Pittsburgh, PA USA\\
 \texttt{gmontane@cs.cmu.edu} \\
 \And    
 Saeed Amizadeh\\
-Yahoo Labs\\
+Media Sciences, Yahoo! Labs\\
+Yahoo!\\
 Sunnyvale, CA USA\\
 \texttt{amizadeh@yahoo-inc.com} \\
 \And
 Nikolay Laptev \\
-Yahoo Labs\\
+Media Sciences, Yahoo! Labs\\
+Yahoo!\\
 Sunnyvale, CA USA\\
 \texttt{nlaptev@yahoo-inc.com} \\
 }
@@ -61,9 +54,7 @@ Sunnyvale, CA USA\\
 \maketitle
 
 \begin{abstract}
-\begin{quote}
     Faced with the problem of segmenting a multivariate time series in an unsupervised manner, we derive and test two methods of regularizing hidden Markov models for this task. Regularization on state transitions provide smooth transitioning among states, such that the sequences are split into broad, contiguous segments. Our methods are compared with a recent hierarchical Dirichlet process hidden Markov model (HDP-HMM) and a baseline standard hidden Markov model, of which the former suffers from poor performance on moderate-dimensional data and sensitivity to parameter settings, while the latter suffers from rapid state transitioning, over-segmentation and poor performance on a segmentation task involving human activity accelerometer data from the UCI Machine Learning Repository. The regularized methods developed here are able to perfectly segment the human activity data in roughly half of the real-data test cases, with accuracy of 94\% and low variation of information. In contrast to the HDP-HMM, our methods provide simple, drop-in replacements for standard hidden Markov model update rules, allowing standard expectation maximization (EM) algorithms to be used for learning. Lastly, we make progress towards tuning the regularization strength in an unsupervised manner and derive equations for online learning of the regularized HMM parameters.
-\end{quote}
 \end{abstract}
 
 \section{Introduction}
@@ -76,9 +67,9 @@ Sunnyvale, CA USA\\
 
 Let $\mathbf{X} = \{\mathbf{x}_1, \ldots, \mathbf{x}_T\}$ denote a $d$-dimensional multivariate time series, where $\mathbf{x}_t \in \mathbb{R}^d$. Given such a time series, we seek to segment $\mathbf{X}$ along the time axis into \emph{segments}, where each segment corresponds to a subsequence $\mathbf{X}_{i\ldots i+m} = \{\mathbf{x}_i, \ldots, \mathbf{x}_{i+m}\}$ and maps to a predictive (latent) state $\mathbf{z}$, represented as a one-of-$K$ vector, where $|\mathbf{z}| = K$ and $\sum_{i=1}^{K}z_{t,i} = 1$. For simplicity of notation, let $\mathbf{z}_{t} = k$ denote $z_{t,k} = 1$ and let $\mathbf{Z} = \{\mathbf{z}_1, \ldots, \mathbf{z}_T\}$ denote the sequence of latent states. Then for all $\mathbf{x}_{t}$ mapping to state $k$, we require that
 \begin{align*}
-    \Pr(\mathbf{x}_{t+1}|\mathbf{X}_{1\ldots t}, \mathbf{z}_t &= k) = \Pr(\mathbf{x}_{t+1}| \mathbf{z}_t = k) \\
-                                                            &= \Pr(\mathbf{x}_{t'+1}| \mathbf{z}_{t'} = k) \\
-                                                            &= \Pr(\mathbf{x}_{t'+1}| \mathbf{X}_{1\ldots t'}, \mathbf{z}_{t'} = k).
+    \Pr(\mathbf{x}_{t+1}|\mathbf{X}_{1\ldots t}, \mathbf{z}_t = k) &= \Pr(\mathbf{x}_{t+1}| \mathbf{z}_t = k) \\
+                                                                   &= \Pr(\mathbf{x}_{t'+1}| \mathbf{z}_{t'} = k) \\
+                                                                   &= \Pr(\mathbf{x}_{t'+1}| \mathbf{X}_{1\ldots t'}, \mathbf{z}_{t'} = k).
 \end{align*}
 Thus, the conditional distribution over futures at time $t$ conditioned on being in state $k$ is equal to the distribution over futures at time $t'$ conditioned on being in the same state. Thus, we assume conditional independence given state, and stationarity of the generative process.
 
@@ -119,14 +110,13 @@ where the $\eta_{jk}$ are free parameters and $A_{jk}$ is the transition probabi
 \end{align*}
 and the log-likelihood is
 \begin{align*}
-\ell(\mathbf{X}, \mathbf{Z} ; \mathbf{\theta}, \eta) \propto \sum_{i=1}^{K}\sum_{i=1}^{K} (\eta_{jk} - 1)\log A_{jk} + \\
-\log P(\mathbf{z}_{1}; \theta) + \sum_{t=1}^{T}\log P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) + \\\sum_{t=2}^{T}\log P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta}).
+\ell(\mathbf{X}, \mathbf{Z} ; \mathbf{\theta}, \eta) 
+&\propto \sum_{i=1}^{K}\sum_{i=1}^{K} (\eta_{jk} - 1)\log A_{jk} + \log P(\mathbf{z}_{1}; \theta) + \sum_{t=1}^{T}\log P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) + \sum_{t=2}^{T}\log P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta}).
 \end{align*}
 
 MAP estimation is then used in the M-step of the EM algorithm, to update the transition probability matrix. Maximizing, with appropriate Lagrange multiplier constraints, we obtain the update equation for the transition matrix, 
 \begin{align}
-    A_{jk}                &\nonumber
-     =\\ \frac{(\eta_{jk} - 1) + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
+    A_{jk} &= \frac{(\eta_{jk} - 1) + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
     {\sum_{i=1}^{K}(\eta_{ji} - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}.
 \end{align}
 
@@ -160,12 +150,10 @@ In Equation~\ref{eq:MAP-final}, the strength of the regularization diminishes wi
 \end{figure}
 
 We desire models where the regularization strength is scale-free, having roughly the same strength regardless of how the time series grows. To achieve this, we define the $\lambda$ parameter to scale with the number of transitions, namely $\lambda = (T-1)^\zeta$, and our scale-free update equation becomes
-{\tiny
 \begin{align}\label{eq:SCALE-FREE-MAP}
     A_{jk} &= \frac{((T - 1)^{\zeta}-1){\mathbbm{1}(j = k)} + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
     {((T - 1)^{\zeta} - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}.
 \end{align}
-}%
 This preserves the effect of regularization as $T$ increases, and $\zeta$ becomes our new regularization parameter, controlling the strength of the regularization. For consistency, we also re-parameterize Equation~\ref{eq:PSO-final} using the same form, i.e., $\lambda = (T-1)^\zeta$.
 
 %Figures~\ref{fig:short-real-data-scale-free} and \ref{fig:long-real-data-scale-free} shows the scale-free regularized result on both a short and long sequence, using the same regularization parameter. The parameter was chosen in reference to the short sequence, selecting the smallest parameter that still provided correct segmentation. As can be seen, the regularization strength is sufficient for the long sequence as well, illustrating the effectiveness of a scale-free parameterization.
@@ -203,7 +191,7 @@ Hidden Markov models traditionally use batch methods for learning model paramete
 
 Define $D_{T,i} := ((T-1)^\zeta -1) + \sum_{t=2}^{T}\sum_{k=1}^{K} \xi(z_{(t-1)i}, z_{tk})$. The recurrence for $D_{T,i}$ is
 \begin{align*}
-    D_{T,i} = [(T-1)^\zeta - (T-2)^\zeta] &+\\  \sum_{k=1}^{K} \xi(z_{(T-1)i}, z_{Tk}) + D_{(T-1), i}
+    D_{T,i} &= [(T-1)^\zeta - (T-2)^\zeta] +  \sum_{k=1}^{K} \xi(z_{(T-1)i}, z_{Tk}) + D_{(T-1), i}
 \end{align*}
 where $T$ is the current time-step. Since $T$ is both the current and final time-step, we have $\beta(z_{T,k}) = 1$ for $k = 1, \ldots, K$, and thus
 \begin{align*}
@@ -219,9 +207,7 @@ where
 
 An efficient online update equation for the regularized transition matrix is then given by
 \begin{align*}
-    A_{ij}^{(T)} = \frac{\xi(z_{(T-1)i}, z_{Tj})}{D_{T,i}} &+\\
-           \frac{\mathbbm{1}(i = j)[(T-1)^\zeta - (T-2)^\zeta]}{D_{T,i}} +\\
-           \frac{D_{(T-1), i}}{D_{T,i}}A_{ij}^{(T-1)}.
+    A_{ij}^{(T)} &= \frac{\xi(z_{(T-1)i}, z_{Tj})}{D_{T,i}} + \frac{\mathbbm{1}(i = j)[(T-1)^\zeta - (T-2)^\zeta]}{D_{T,i}} + \frac{D_{(T-1), i}}{D_{T,i}}A_{ij}^{(T-1)}.
 \end{align*}
 
 Also, because $\beta(z_{T,k}) = 1$, we have $\gamma(z_{tk}) = \alpha(z_{tk}) / \sum_{i=1}^{K}\alpha(z_{ti})$. The corresponding incremental update equations for a Gaussian emission model (as reported in~\cite{stenger2001}) are 
@@ -230,8 +216,7 @@ Also, because $\beta(z_{T,k}) = 1$, we have $\gamma(z_{tk}) = \alpha(z_{tk}) / \
 \end{align*}
 and
 \begin{align*}
-    \mathbf{S}_j^{(T)} = \frac{\sum_{t=1}^{T-1}\gamma(z_{tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\mathbf{S}_j^{(T-1)} &+\\
-     \frac{\gamma(z_{Tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\left(\mathbf{x}_T - \mathbf{\mu}_j^{(T)}\right)\left(\mathbf{x}_T - \mathbf{\mu}_j^{(T)}\right)'
+    \mathbf{S}_j^{(T)} &= \frac{\sum_{t=1}^{T-1}\gamma(z_{tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\mathbf{S}_j^{(T-1)} + \frac{\gamma(z_{Tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\left(\mathbf{x}_T - \mathbf{\mu}_j^{(T)}\right)\left(\mathbf{x}_T - \mathbf{\mu}_j^{(T)}\right)'
 \end{align*}
 where $(\cdot)'$ denotes the matrix transpose operation and $\mathbf{S}_j$ is the covariance matrix for state $j$.
 
@@ -398,7 +383,7 @@ Although the methods derived here are simple, they perform well and are computat
 
 The authors would like to thank Emily Fox and Erik Sudderth for their discussions, feedback and assistance with use of the HDP-HMM toolbox.
 
-\bibliographystyle{aaai}
+\bibliographystyle{amsplain}
 \bibliography{references}
 
 \end{document}

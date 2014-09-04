@@ -1,0 +1,818 @@
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  3 SEP 2014 16:23
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**george_montanez_proposal.tex
+(./george_montanez_proposal.tex
+LaTeX2e <2011/06/27>
+Babel <v3.8m> and hyphenation patterns for english, dumylang, nohyphenation, ge
+rman-x-2012-05-30, ngerman-x-2012-05-30, afrikaans, ancientgreek, ibycus, arabi
+c, armenian, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danis
+h, dutch, ukenglish, usenglishmax, esperanto, estonian, ethiopic, farsi, finnis
+h, french, friulan, galician, german, ngerman, swissgerman, monogreek, greek, h
+ungarian, icelandic, assamese, bengali, gujarati, hindi, kannada, malayalam, ma
+rathi, oriya, panjabi, tamil, telugu, indonesian, interlingua, irish, italian, 
+kurmanji, latin, latvian, lithuanian, mongolian, mongolianlmc, bokmal, nynorsk,
+ polish, portuguese, romanian, romansh, russian, sanskrit, serbian, serbianc, s
+lovak, slovenian, spanish, swedish, turkish, turkmen, ukrainian, uppersorbian, 
+welsh, loaded.
+(/usr/local/texlive/2012/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/local/texlive/2012/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+) (./aaai.sty
+Conference Style for AAAI for LaTeX 2e -- version of 1 December 2013
+\titlebox=\skip43
+) (/usr/local/texlive/2012/texmf-dist/tex/latex/psnfss/times.sty
+Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/psnfss/helvet.sty
+Package: helvet 2005/04/12 PSNFSS-v9.2a (WaS) 
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+))
+(/usr/local/texlive/2012/texmf-dist/tex/latex/psnfss/courier.sty
+Package: courier 2005/04/12 PSNFSS-v9.2a (WaS) 
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip10
+Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+(/usr/local/texlive/2012/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+(/usr/local/texlive/2012/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/tools/tabularx.sty
+Package: tabularx 1999/01/07 v2.07 `tabularx' package (DPC)
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/tools/array.sty
+Package: array 2008/09/09 v2.4c Tabular extension package (FMi)
+\col@sep=\dimen105
+\extrarowheight=\dimen106
+\NC@list=\toks15
+\extratabsurround=\skip44
+\backup@length=\skip45
+)
+\TX@col@width=\dimen107
+\TX@old@table=\dimen108
+\TX@old@col=\dimen109
+\TX@target=\dimen110
+\TX@delta=\dimen111
+\TX@cols=\count88
+\TX@ftn=\toks16
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+(/usr/local/texlive/2012/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+(/usr/local/texlive/2012/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+)
+(/usr/local/texlive/2012/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count89
+\Gm@cntv=\count90
+\c@Gm@tempcnt=\count91
+\Gm@bindingoffset=\dimen112
+\Gm@wd@mp=\dimen113
+\Gm@odd@mp=\dimen114
+\Gm@even@mp=\dimen115
+\Gm@layoutwidth=\dimen116
+\Gm@layoutheight=\dimen117
+\Gm@layouthoffset=\dimen118
+\Gm@layoutvoffset=\dimen119
+\Gm@dimlist=\toks17
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2000/07/18 v2.13 AMS math features
+\@mathmargin=\skip46
+
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks18
+\ex@=\dimen120
+))
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen121
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count92
+LaTeX Info: Redefining \frac on input line 211.
+\uproot@=\count93
+\leftroot@=\count94
+LaTeX Info: Redefining \overline on input line 307.
+\classnum@=\count95
+\DOTSCASE@=\count96
+LaTeX Info: Redefining \ldots on input line 379.
+LaTeX Info: Redefining \dots on input line 382.
+LaTeX Info: Redefining \cdots on input line 467.
+\Mathstrutbox@=\box26
+\strutbox@=\box27
+\big@size=\dimen122
+LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
+\macc@depth=\count97
+\c@MaxMatrixCols=\count98
+\dotsspace@=\muskip11
+\c@parentequation=\count99
+\dspbrk@lvl=\count100
+\tag@help=\toks19
+\row@=\count101
+\column@=\count102
+\maxfields@=\count103
+\andhelp@=\toks20
+\eqnshift@=\dimen123
+\alignsep@=\dimen124
+\tagshift@=\dimen125
+\tagwidth@=\dimen126
+\totwidth@=\dimen127
+\lineht@=\dimen128
+\@envbody=\toks21
+\multlinegap=\skip47
+\multlinetaggap=\skip48
+\mathdisplay@stack=\toks22
+LaTeX Info: Redefining \[ on input line 2666.
+LaTeX Info: Redefining \] on input line 2667.
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2009/06/22 v3.00
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
+))
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amscls/amsthm.sty
+Package: amsthm 2009/07/02 v2.20.1
+\thm@style=\toks23
+\thm@bodyfont=\toks24
+\thm@headfont=\toks25
+\thm@notefont=\toks26
+\thm@headpunct=\toks27
+\thm@preskip=\skip49
+\thm@postskip=\skip50
+\thm@headsep=\skip51
+\dth@everypar=\toks28
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/bbm-macros/bbm.sty
+Package: bbm 1999/03/15 V 1.2 provides fonts for set symbols - TH
+LaTeX Font Info:    Overwriting math alphabet `\mathbbm' in version `bold'
+(Font)                  U/bbm/m/n --> U/bbm/bx/n on input line 33.
+LaTeX Font Info:    Overwriting math alphabet `\mathbbmss' in version `bold'
+(Font)                  U/bbmss/m/n --> U/bbmss/bx/n on input line 35.
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2005/09/27 v1.99g Standard LaTeX package
+Package textcomp Info: Sub-encoding information:
+(textcomp)               5 = only ISO-Adobe without \textcurrency
+(textcomp)               4 = 5 + \texteuro
+(textcomp)               3 = 4 + \textohm
+(textcomp)               2 = 3 + \textestimated + \textcurrency
+(textcomp)               1 = TS1 - \textcircled - \t
+(textcomp)               0 = TS1 (full)
+(textcomp)             Font families with sub-encoding setting implement
+(textcomp)             only a restricted character set as indicated.
+(textcomp)             Family '?' is the default used for unknown fonts.
+(textcomp)             See the documentation for details.
+Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 71.
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/base/ts1enc.def
+File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
+)
+LaTeX Info: Redefining \oldstylenums on input line 266.
+Package textcomp Info: Setting cmr sub-encoding to TS1/0 on input line 281.
+Package textcomp Info: Setting cmss sub-encoding to TS1/0 on input line 282.
+Package textcomp Info: Setting cmtt sub-encoding to TS1/0 on input line 283.
+Package textcomp Info: Setting cmvtt sub-encoding to TS1/0 on input line 284.
+Package textcomp Info: Setting cmbr sub-encoding to TS1/0 on input line 285.
+Package textcomp Info: Setting cmtl sub-encoding to TS1/0 on input line 286.
+Package textcomp Info: Setting ccr sub-encoding to TS1/0 on input line 287.
+Package textcomp Info: Setting ptm sub-encoding to TS1/4 on input line 288.
+Package textcomp Info: Setting pcr sub-encoding to TS1/4 on input line 289.
+Package textcomp Info: Setting phv sub-encoding to TS1/4 on input line 290.
+Package textcomp Info: Setting ppl sub-encoding to TS1/3 on input line 291.
+Package textcomp Info: Setting pag sub-encoding to TS1/4 on input line 292.
+Package textcomp Info: Setting pbk sub-encoding to TS1/4 on input line 293.
+Package textcomp Info: Setting pnc sub-encoding to TS1/4 on input line 294.
+Package textcomp Info: Setting pzc sub-encoding to TS1/4 on input line 295.
+Package textcomp Info: Setting bch sub-encoding to TS1/4 on input line 296.
+Package textcomp Info: Setting put sub-encoding to TS1/5 on input line 297.
+Package textcomp Info: Setting uag sub-encoding to TS1/5 on input line 298.
+Package textcomp Info: Setting ugq sub-encoding to TS1/5 on input line 299.
+Package textcomp Info: Setting ul8 sub-encoding to TS1/4 on input line 300.
+Package textcomp Info: Setting ul9 sub-encoding to TS1/4 on input line 301.
+Package textcomp Info: Setting augie sub-encoding to TS1/5 on input line 302.
+Package textcomp Info: Setting dayrom sub-encoding to TS1/3 on input line 303.
+Package textcomp Info: Setting dayroms sub-encoding to TS1/3 on input line 304.
+
+Package textcomp Info: Setting pxr sub-encoding to TS1/0 on input line 305.
+Package textcomp Info: Setting pxss sub-encoding to TS1/0 on input line 306.
+Package textcomp Info: Setting pxtt sub-encoding to TS1/0 on input line 307.
+Package textcomp Info: Setting txr sub-encoding to TS1/0 on input line 308.
+Package textcomp Info: Setting txss sub-encoding to TS1/0 on input line 309.
+Package textcomp Info: Setting txtt sub-encoding to TS1/0 on input line 310.
+Package textcomp Info: Setting lmr sub-encoding to TS1/0 on input line 311.
+Package textcomp Info: Setting lmdh sub-encoding to TS1/0 on input line 312.
+Package textcomp Info: Setting lmss sub-encoding to TS1/0 on input line 313.
+Package textcomp Info: Setting lmssq sub-encoding to TS1/0 on input line 314.
+Package textcomp Info: Setting lmvtt sub-encoding to TS1/0 on input line 315.
+Package textcomp Info: Setting qhv sub-encoding to TS1/0 on input line 316.
+Package textcomp Info: Setting qag sub-encoding to TS1/0 on input line 317.
+Package textcomp Info: Setting qbk sub-encoding to TS1/0 on input line 318.
+Package textcomp Info: Setting qcr sub-encoding to TS1/0 on input line 319.
+Package textcomp Info: Setting qcs sub-encoding to TS1/0 on input line 320.
+Package textcomp Info: Setting qpl sub-encoding to TS1/0 on input line 321.
+Package textcomp Info: Setting qtm sub-encoding to TS1/0 on input line 322.
+Package textcomp Info: Setting qzc sub-encoding to TS1/0 on input line 323.
+Package textcomp Info: Setting qhvc sub-encoding to TS1/0 on input line 324.
+Package textcomp Info: Setting futs sub-encoding to TS1/4 on input line 325.
+Package textcomp Info: Setting futx sub-encoding to TS1/4 on input line 326.
+Package textcomp Info: Setting futj sub-encoding to TS1/4 on input line 327.
+Package textcomp Info: Setting hlh sub-encoding to TS1/3 on input line 328.
+Package textcomp Info: Setting hls sub-encoding to TS1/3 on input line 329.
+Package textcomp Info: Setting hlst sub-encoding to TS1/3 on input line 330.
+Package textcomp Info: Setting hlct sub-encoding to TS1/5 on input line 331.
+Package textcomp Info: Setting hlx sub-encoding to TS1/5 on input line 332.
+Package textcomp Info: Setting hlce sub-encoding to TS1/5 on input line 333.
+Package textcomp Info: Setting hlcn sub-encoding to TS1/5 on input line 334.
+Package textcomp Info: Setting hlcw sub-encoding to TS1/5 on input line 335.
+Package textcomp Info: Setting hlcf sub-encoding to TS1/5 on input line 336.
+Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 337.
+Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 338.
+Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 339.
+Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 340.
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/algorithms/algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count104
+\float@exts=\toks29
+\float@box=\box28
+\@float@everytoks=\toks30
+\@floatcapt=\box29
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\@float@every@algorithm=\toks31
+\c@algorithm=\count105
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
+Package: algpseudocode 
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count106
+\c@ALG@rem=\count107
+\c@ALG@nested=\count108
+\ALG@tlm=\skip52
+\ALG@thistlm=\skip53
+\c@ALG@Lnr=\count109
+\c@ALG@blocknr=\count110
+\c@ALG@storecount=\count111
+\c@ALG@tmpcounter=\count112
+\ALG@tmplength=\skip54
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+) (./george_montanez_proposal.aux)
+\openout1 = `george_montanez_proposal.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 36.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 36.
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/base/ts1cmr.fd
+File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 36.
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+(/usr/local/texlive/2012/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count113
+\scratchdimen=\dimen129
+\scratchbox=\box30
+\nofMPsegments=\count114
+\nofMParguments=\count115
+\everyMPshowfont=\toks32
+\MPscratchCnt=\count116
+\MPscratchDim=\dimen130
+\MPnumerator=\count117
+\makeMPintoPDFobject=\count118
+\everyMPtoPDFconversion=\toks33
+) (/usr/local/texlive/2012/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/local/texlive/2012/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+
+(/usr/local/texlive/2012/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+))
+(/usr/local/texlive/2012/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+
+(/usr/local/texlive/2012/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+
+(/usr/local/texlive/2012/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 452.
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: letterpaper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(92.14519pt, 430.00462pt, 92.14519pt)
+* v-part:(T,H,B)=(95.39737pt, 556.47656pt, 143.09605pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=430.00462pt
+* \textheight=556.47656pt
+* \oddsidemargin=19.8752pt
+* \evensidemargin=19.8752pt
+* \topmargin=23.12738pt
+* \headheight=0.0pt
+* \headsep=0.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=27.10124pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumntrue
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 61.
+LaTeX Font Info:    Try loading font information for U+msa on input line 61.
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 61.
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 61.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 61.
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 61.
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 63.
+
+(./introduction.tex)
+Underfull \hbox (badness 1231) in paragraph at lines 77--78
+\OT1/ptm/m/n/10 the time axis into \OT1/ptm/m/it/10 seg-ments\OT1/ptm/m/n/10 , 
+where each seg-
+ []
+
+[1{/usr/local/texlive/2012/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+
+
+]
+
+LaTeX Warning: Citation `rabiner1989tutorial' on page 2 undefined on input line
+ 87.
+
+
+Underfull \hbox (badness 2460) in paragraph at lines 87--88
+\OT1/ptm/m/n/10 posed on our model, since sim-ply max-i-miz-
+ []
+
+
+Underfull \hbox (badness 2119) in paragraph at lines 87--88
+\OT1/ptm/m/n/10 ing the like-li-hood of the data will re-sult in
+ []
+
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 91.
+
+Underfull \hbox (badness 3260) in paragraph at lines 93--94
+\OT1/ptm/m/n/10 As stated above, we are given a sin-gle $\OML/cmm/m/it/10 d$\OT
+1/ptm/m/n/10 -
+ []
+
+
+LaTeX Warning: Citation `rabiner1989tutorial' on page 2 undefined on input line
+ 103.
+
+
+LaTeX Warning: Citation `MAP1994' on page 2 undefined on input line 111.
+
+
+Overfull \hbox (1.5567pt too wide) in paragraph at lines 119--119
+[] 
+ []
+
+[2]
+LaTeX Font Info:    Try loading font information for U+bbm on input line 137.
+ (/usr/local/texlive/2012/texmf-dist/tex/latex/bbm-macros/ubbm.fd
+File: ubbm.fd 1999/03/15 V 1.2 Font definition for bbm font - TH
+)
+(./inertial_derivation.tex
+Underfull \hbox (badness 10000) in paragraph at lines 1--2
+ \OT1/ptm/b/n/10 In-er-tial Reg-u-lar-iza-tion via Pseudo-
+ []
+
+
+Underfull \hbox (badness 3590) in paragraph at lines 1--2
+\OT1/ptm/m/n/10 to some dis-tri-bu-tion, and that the tran-si-tion
+ []
+
+
+Underfull \hbox (badness 1558) in paragraph at lines 1--2
+\OT1/ptm/m/n/10 to a Bernoulli dis-tri-bu-tion gov-erned by some
+ []
+
+
+Underfull \hbox (badness 1448) in paragraph at lines 19--20
+\OT1/ptm/m/n/10 we ob-serve $\OML/cmm/m/it/10 V \OT1/cmr/m/n/10 = 1$ \OT1/ptm/m
+/n/10 (i.e., a mem-ber of the
+ []
+
+
+Overfull \hbox (2.03835pt too wide) in paragraph at lines 26--26
+[] 
+ []
+
+[3]
+Underfull \vbox (badness 7433) has occurred while \output is active []
+
+
+
+LaTeX Warning: Citation `bishop2007pattern' on page 4 undefined on input line 5
+3.
+
+
+Overfull \hbox (52.72827pt too wide) in paragraph at lines 73--73
+[] 
+ []
+
+[4])
+Underfull \hbox (badness 1803) in paragraph at lines 146--147
+\OT1/ptm/m/n/10 strength of the reg-u-lar-iza-tion di-min-ishes with
+ []
+
+
+<images/MAP_results_hard_activity_short_3_states.pdf, id=38, 732.05527pt x 321.
+21724pt>
+File: images/MAP_results_hard_activity_short_3_states.pdf Graphic file (type pd
+f)
+ <use images/MAP_results_hard_activity_short_3_states.pdf>
+Package pdftex.def Info: images/MAP_results_hard_activity_short_3_states.pdf us
+ed on input line 151.
+(pdftex.def)             Requested size: 161.16196pt x 70.71211pt.
+
+Underfull \hbox (badness 2027) in paragraph at lines 156--156
+\OT1/ptm/m/n/10 long se-quence. Reg-u-lar-iza-tion pa-ram-e-ter from
+ []
+
+
+<images/MAP_results_hard_activity_long_3_states.pdf, id=39, 724.22131pt x 321.2
+1724pt>
+File: images/MAP_results_hard_activity_long_3_states.pdf Graphic file (type pdf
+)
+ <use images/MAP_results_hard_activity_long_3_states.pdf>
+Package pdftex.def Info: images/MAP_results_hard_activity_long_3_states.pdf use
+d on input line 158.
+(pdftex.def)             Requested size: 161.16196pt x 71.47673pt.
+
+Underfull \hbox (badness 2213) in paragraph at lines 162--164
+[]\OT1/ptm/m/n/10 We de-sire mod-els where the reg-u-lar-iza-tion
+ []
+
+
+LaTeX Warning: Citation `gini1936' on page 5 undefined on input line 191.
+
+
+LaTeX Warning: Citation `wiki:1' on page 5 undefined on input line 191.
+
+[5 <./images/MAP_results_hard_activity_short_3_states.pdf> <./images/MAP_result
+s_hard_activity_long_3_states.pdf
+
+pdfTeX warning: /usr/texbin/pdflatex (file ./images/MAP_results_hard_activity_l
+ong_3_states.pdf): PDF inclusion: multiple pdfs with page group included in a s
+ingle page
+>]
+
+LaTeX Warning: Citation `stenger2001' on page 6 undefined on input line 200.
+
+
+LaTeX Warning: Citation `Neal:1999:VEA:308574.308679' on page 6 undefined on in
+put line 200.
+
+
+Overfull \hbox (8.06113pt too wide) in paragraph at lines 214--214
+[] 
+ []
+
+
+Underfull \vbox (badness 3482) has occurred while \output is active []
+
+
+
+LaTeX Warning: Citation `stenger2001' on page 6 undefined on input line 227.
+
+
+Underfull \hbox (badness 1460) in paragraph at lines 227--228
+\OML/cmm/m/it/10 \OT1/cmr/m/n/10 (\OML/cmm/m/it/10 z[]\OT1/cmr/m/n/10 )\OML/cm
+m/m/it/10 = [][] \OT1/cmr/m/n/10 (\OML/cmm/m/it/10 z[]\OT1/cmr/m/n/10 )$\OT1/p
+tm/m/n/10 . The cor-re-spond-ing in-cre-
+ []
+
+
+Underfull \hbox (badness 3668) in paragraph at lines 240--241
+ \OT1/ptm/b/n/10 Ini-tial-iza-tion \OT1/ptm/m/n/10 The pro-cess be-gins by batc
+h-
+ []
+
+[6]
+Underfull \hbox (badness 2680) in paragraph at lines 250--251
+[]\OT1/ptm/b/n/10 pro-ce-dure \OT1/ptm/m/sc/10 In-cre-men-tal Learn-ing of
+ []
+
+
+Underfull \hbox (badness 1748) in paragraph at lines 251--252
+[] \OT1/ptm/m/n/10 Batch learn ini-tial pa-ram-e-ter es-ti-mates
+ []
+
+
+Underfull \hbox (badness 1221) in paragraph at lines 255--256
+[] \OT1/ptm/m/n/10 Com-pute $\OML/cmm/m/it/10 ^^X\OT1/cmr/m/n/10 (\OML/cmm/m/it
+/10 z[]; z[]\OT1/cmr/m/n/10 )$ \OT1/ptm/m/n/10 val-ues for all
+ []
+
+
+Underfull \hbox (badness 1552) in paragraph at lines 257--258
+[] \OT1/ptm/m/n/10 Up-date $\OML/cmm/m/it/10 A[]$ \OT1/ptm/m/n/10 us-ing in-cre
+-men-tal up-date
+ []
+
+
+LaTeX Warning: Citation `fox2011sticky' on page 7 undefined on input line 270.
+
+
+Underfull \hbox (badness 1147) in paragraph at lines 270--271
+\OT1/ptm/m/n/10 We per-form two seg-men-ta-tion tasks on sim-u-
+ []
+
+<images/3D_synthetic_data_example.pdf, id=93, 867.24pt x 505.89pt>
+File: images/3D_synthetic_data_example.pdf Graphic file (type pdf)
+
+<use images/3D_synthetic_data_example.pdf>
+Package pdftex.def Info: images/3D_synthetic_data_example.pdf used on input lin
+e 288.
+(pdftex.def)             Requested size: 201.45169pt x 117.51013pt.
+
+
+LaTeX Warning: Citation `Altun:2010:CSC:1823245.1823314' on page 7 undefined on
+ input line 291.
+
+
+Underfull \hbox (badness 1472) in paragraph at lines 291--292
+[]\OT1/ptm/m/n/10 The sec-ond dataset is gen-er-ated from real-
+ []
+
+[7 <./images/3D_synthetic_data_example.pdf>]
+<images/accelerometer-data.pdf, id=135, 753.83194pt x 436.84926pt>
+File: images/accelerometer-data.pdf Graphic file (type pdf)
+
+<use images/accelerometer-data.pdf>
+Package pdftex.def Info: images/accelerometer-data.pdf used on input line 298.
+(pdftex.def)             Requested size: 201.45169pt x 116.7377pt.
+
+<images/distribution_of_dataset_segments.pdf, id=136, 578.16pt x 433.62pt>
+File: images/distribution_of_dataset_segments.pdf Graphic file (type pdf)
+
+<use images/distribution_of_dataset_segments.pdf>
+Package pdftex.def Info: images/distribution_of_dataset_segments.pdf used on in
+put line 305.
+(pdftex.def)             Requested size: 201.45169pt x 151.08777pt.
+
+
+LaTeX Warning: Citation `meila' on page 8 undefined on input line 311.
+
+
+LaTeX Warning: Citation `fox2011sticky' on page 8 undefined on input line 319.
+
+
+LaTeX Warning: Citation `HDP-HMM-TOOLKIT' on page 8 undefined on input line 319
+.
+
+[8 <./images/accelerometer-data.pdf> <./images/distribution_of_dataset_segments
+.pdf
+
+pdfTeX warning: /usr/texbin/pdflatex (file ./images/distribution_of_dataset_seg
+ments.pdf): PDF inclusion: multiple pdfs with page group included in a single p
+age
+>]
+<images/MAP_PARAM_FREE_results_hard_activity_long_1,97_3_states.pdf, id=209, 81
+8.12523pt x 494.66527pt>
+File: images/MAP_PARAM_FREE_results_hard_activity_long_1,97_3_states.pdf Graphi
+c file (type pdf)
+
+<use images/MAP_PARAM_FREE_results_hard_activity_long_1,97_3_states.pdf>
+Package pdftex.def Info: images/MAP_PARAM_FREE_results_hard_activity_long_1,97_
+3_states.pdf used on input line 328.
+(pdftex.def)             Requested size: 161.16196pt x 97.44435pt.
+
+[9 <./images/MAP_PARAM_FREE_results_hard_activity_long_1,97_3_states.pdf>]
+
+LaTeX Warning: Citation `fox2011sticky' on page 10 undefined on input line 377.
+
+
+
+Underfull \hbox (badness 1354) in paragraph at lines 381--382
+\OT1/ptm/m/n/10 dent ways, the MAP reg-u-lar-ized and pseudo-
+ []
+
+
+Underfull \hbox (badness 1629) in paragraph at lines 383--384
+[]\OT1/ptm/m/n/10 The hu-man ac-tiv-ity task high-lighted an is-
+ []
+
+
+Underfull \hbox (badness 1681) in paragraph at lines 385--386
+\OT1/ptm/m/n/10 er-ately well on the low-dimensional syn-thetic
+ []
+
+
+LaTeX Warning: Citation `rabiner1989tutorial' on page 10 undefined on input lin
+e 391.
+
+
+LaTeX Warning: Citation `MAP1994' on page 10 undefined on input line 391.
+
+
+LaTeX Warning: Citation `neukirchen1999controlling' on page 10 undefined on inp
+ut line 391.
+
+
+LaTeX Warning: Citation `Johnson07whydoesnt' on page 10 undefined on input line
+ 391.
+
+[10]
+
+LaTeX Warning: Citation `fox2011sticky' on page 11 undefined on input line 393.
+
+
+No file george_montanez_proposal.bbl.
+[11
+
+] (./george_montanez_proposal.aux) ) 
+Here is how much of TeX's memory you used:
+ 4426 strings out of 493488
+ 62875 string characters out of 3141326
+ 128548 words of memory out of 3000000
+ 7599 multiletter control sequences out of 15000+200000
+ 27007 words of font info for 63 fonts, out of 3000000 for 9000
+ 957 hyphenation exceptions out of 8191
+ 38i,15n,24p,1633b,249s stack positions out of 5000i,500n,10000p,200000b,50000s
+ </Users/nlaptev/Library/texlive/2012/texmf
+-var/fonts/pk/ljfour/public/bbm/bbm6.600pk> </Users/nlaptev/Library/texlive/201
+2/texmf-var/fonts/pk/ljfour/public/bbm/bbm10.600pk>{/usr/local/texlive/2012/tex
+mf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2012/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2012/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmbx7.pfb></usr/local/texlive/2012/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1
+/public/amsfonts/cmextra/cmex7.pfb></usr/local/texlive/2012/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2012/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmr10.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr5.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmr6.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr7.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmsy10.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmsy5.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmsy6.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmsy7.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/symbo
+ls/msbm10.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/urw/courier/ucrr8
+a.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></us
+r/local/texlive/2012/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/te
+xlive/2012/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on george_montanez_proposal.pdf (11 pages, 585498 bytes).
+PDF statistics:
+ 331 PDF objects out of 1000 (max. 8388607)
+ 144 compressed objects within 2 object streams
+ 0 named destinations out of 1000 (max. 500000)
+ 31 words of extra memory for PDF output out of 10000 (max. 10000000)
+

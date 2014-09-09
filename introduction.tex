@@ -1,1 +1,29 @@
-This is where the introduction goes. Want to give it a shot, Saeed or Nikolay?
+Time series data arise in different areas of science and technology, describing
+the \emph{behavior} of both natural and man-made systems over time. These
+behaviors are often quite complex with uncertainty, which in turn require us to
+incorporate sophisticated dynamics and stochastic models to model such
+behavioral patterns. Furthermore, these complex behaviors can
+\emph{change} over time due to some external event and/or some internal
+systematic change of dynamics/distribution. For example, consider the case of
+monitoring one's physical activity via an array of accelerometer body sensors
+over time. A certain pattern emerges on the time series of the sensors' readings
+while the person is walking; however, this pattern quickly changes to a new one
+as the person starts running. From the data anaylsis perspective, firstly it is
+important to detect these \emph{change points} as they are quite often
+indicative of an ``interesting'' event or an anomaly in the system. Secondly, we
+are also interested to characterize the new \emph{state} of the system (e.g. running vs.
+walking) which reflects its modus operandi. Change point detection methods ~\cite{} have been proposed
+to answer the first question while the classical Hidden Markov Models (HMM) can
+answer both.
+
+One crucial observation in many real-world systems (natural and man-made) is
+that the behavior changes are typically infrequent; that is, the system takes some
+(unknown) time before it changes its behavior to a new modus operandi. For
+instance, in our earlier example, it is unlikely that a person changes between
+walking and running very frequently, plus the durations of different activities
+over time are relatively long and highly variable. We refer to this as the
+\emph{inertial property}, alluding to the physical property of matter that ensures it will continue along
+a fixed course unless acted upon by an external force. Unfortunately,
+the classical HMMs are not equipped with sufficient mechanisms to capture this
+property and quite often result in a high rate of false positives in terms of
+change points. 

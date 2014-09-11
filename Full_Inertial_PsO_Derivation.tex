@@ -1,0 +1,62 @@
+Noting that $\mathbf{V}$ is conditionally independent of $\mathbf{X}$ given the
+latent state sequence $\mathbf{Z}$, we now consider the joint log-density over
+$\mathbf{X}$, $\mathbf{V}$, and $\mathbf{Z}$ parameterized by
+$\mathbf{\theta} = \{\mathbf{\pi},\mathbf{A}, \mathbf{\phi}\}$, which are the start-state
+probabilities, state transition matrix and emission parameters, respectively. 
+% We have
+% \begin{align*}
+%     P(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; \mathbf{\theta}) 
+%     &= P(\mathbf{V}|\mathbf{Z}; \mathbf{\theta}) P(\mathbf{z}_{1} ; \theta) \\
+%     &\times \left[\prod_{t=1}^{T}P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta})\right]\left[\prod_{t=2}^{T}P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta})\right]
+% \end{align*}
+% and, taking the log of the likelihood,
+\begin{align*}
+    \ell(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; &\mathbf{\theta}) 
+    = \log P(\mathbf{V}|\mathbf{Z}; \mathbf{\theta}) + \log P(\mathbf{z}_{1}; \theta) \\
+    &+ \sum_{t=1}^{T}\log P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta})
+     + \sum_{t=2}^{T}\log P(\mathbf{z}_t|\mathbf{z}_{t-1};\mathbf{\theta}).
+\end{align*}
+
+By defining $\ell_1 := \ell(\mathbf{X}, \mathbf{V}=\mathbf{1}, \mathbf{Z} ;
+\mathbf{\theta})$ and noting that
+$P(\mathbf{z}_{1}; \theta) = \prod_{k=1}^{K}\pi_{k}^{z_{1k}}$,
+$P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) = \prod_{k=1}^{K}P(\mathbf{x}_t ;
+\mathbf{\phi}_k)^{z_{tk}}$, and $P(\mathbf{z}_t|\mathbf{z}_{t-1};
+\mathbf{\theta}) = \prod_{k=1}^{K}\prod_{j=1}^{K}A_{jk}^{z_{(t-1)j}z_{tk}}$,
+% substituting into $\ell(\mathbf{X}, \mathbf{V}, \mathbf{Z} ; \mathbf{\theta})$ and letting 
+% \[
+%     \ell_1 = \ell(\mathbf{X}, \mathbf{V}=\mathbf{1}, \mathbf{Z} ; \mathbf{\theta})
+% \]
+we obtain
+\begin{align*}
+    \ell_1
+    &= \sum^{T}_{t=2}\sum^{K}_{k=1}\lambda[z_{(t-1)k} - z_{(t-1)k}z_{tk}]\log A_{kk} \notag\\
+    &+ \sum_{k=1}^{K}{z_{1k}}\log \pi_{k} + \sum_{t=1}^{T}\sum_{k=1}^{K} z_{tk}\log P(\mathbf{x}_t ; \mathbf{\phi}_k) \notag\\
+    &+ \sum_{t=2}^{T}\sum_{k=1}^{K}\sum_{j=1}^{K}[z_{(t-1)j}z_{tk}]\log A_{jk}.
+\end{align*}
+
+Following Bishop~\cite{bishop2007pattern}, we define
+\begin{align*}
+    \gamma(z_{tk}) &= \mathbb{E}[z_{tk}] = \sum_{\mathbf{z}}\gamma(\mathbf{z})z_{tk} \\
+    \xi(z_{(t-1)j}, z_{tk}) &= \mathbb{E}[z_{(t-1)j}z_{tk}] = \sum_{\mathbf{z}}\gamma(\mathbf{z})z_{(t-1)j}z_{tk}
+\end{align*}
+to obtain
+\begin{align}\label{eq:main}
+    \mathbb{E}_{\mathbf{Z}}[\ell_1]
+    &= \sum^{T}_{t=2}\sum^{K}_{k=1}\lambda[\gamma(z_{(t-1)k})-\xi(z_{(t-1)k}, z_{tk})]\log A_{kk} \notag\\
+    &+ \sum_{k=1}^{K}\gamma(z_{1k})\log \pi_{k} + \sum_{t=1}^{T}\sum_{k=1}^{K} \gamma(z_{tk})\log P(\mathbf{x}_t ; \mathbf{\phi}_k) \notag\\
+    &+ \sum_{t=2}^{T}\sum_{k=1}^{K}\sum_{j=1}^{K}\xi(z_{(t-1)j}, z_{tk})\log A_{jk}.
+\end{align}
+
+Using Lagrange multipliers, taking the derivative of (\ref{eq:main}) with
+respect to $A_{jk}$ and setting to the result to zero, we obtain the regularized
+maximum likelihood estimate for $A_{jk}$:
+\begin{align}\label{eq:PSO-final}
+    A_{jk} &= \frac{B_{j,k,T} + {\mathbbm{1}(j = k)}C_{j,k,T}} 
+                   {\sum_{i=1}^{K} B_{j,i,T} + C_{j,j,T}}
+\end{align}
+where $\mathbbm{1}(\cdot)$ denotes the indicator function and
+\begin{align}\label{eq:PSO-final-C-part}
+    B_{j,k,T} &= \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk}), \notag\\
+    C_{j,k,T} &= \lambda\left[\sum_{t=2}^{T}[\gamma(z_{(t-1)k}) - \xi(z_{(t-1)j}, z_{tk})]\right].
+\end{align}

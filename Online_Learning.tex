@@ -1,0 +1,85 @@
+\subsection{Online Learning of Inertial HMM parameters}
+
+Hidden Markov models traditionally use batch methods for learning model
+parameters, such as Baum-Welch EM. Since our inertial regularization methods
+rely on standard EM learning, we can naturally incorporate incremental EM
+learning techniques into our system. We thus extend the work of Stenger \emph{et
+al.}~\cite{stenger2001} to provide an online learning algorithm for our
+regularized MAP hidden Markov model, which allows scaling to arbitrarily large
+datasets. Theoretical justification for incremental online EM learning is given
+in~\cite{Neal:1999:VEA:308574.308679}.
+
+\subsubsection{Parameter Update Equations}
+
+Define 
+\[
+   D_{T,i} := ((T-1)^\zeta -1) + \sum_{t=2}^{T}\sum_{k=1}^{K} \xi(z_{(t-1)i}, z_{tk}).
+\]
+The recurrence for $D_{T,i}$ is then formulated as
+\begin{equation*}
+    D_{T,i} = D_{(T-1), i} + [(T-1)^\zeta - (T-2)^\zeta] + \sum_{k=1}^{K}
+    \xi(z_{(T-1)i}, z_{Tk})
+\end{equation*}
+where $T$ is the current time-step. Since $T$ is both the current and final time-step, we have $\beta(z_{T,k}) = 1$ for $k = 1, \ldots, K$, and thus
+\begin{align*}
+    \xi(\mathbf{z}_{t-1}, \mathbf{z}_{t}) 
+            &= P(\mathbf{z}_{t-1}, \mathbf{z}_{t} | \mathbf{X}) \\
+            &= \frac{\alpha(\mathbf{z}_{t-1})p(\mathbf{x}_t|\mathbf{z}_t; \phi)p(\mathbf{z}_{t}|\mathbf{z}_{(t-1)})\beta(\mathbf{z}_t)}{p(\mathbf{X})} \\
+            &= \frac{\alpha(z_{(t-1)i})p(\mathbf{x}_t; \phi_j)A_{ij}^{(T-1)}}{\sum_{k=1}^{K}\alpha(z_{tk})}
+\end{align*}
+where
+\begin{align*}
+    \alpha(z_{tj}) &= \left[\sum_{i=1}^{K} \alpha(z_{(t-1)i})A_{ij}^{(t-1)}\right]p(\mathbf{x}_t; \phi_j).
+\end{align*}
+
+An efficient online update equation for the regularized transition matrix is then given by
+\begin{align*}
+    A_{ij}^{(T)} &= \frac{D_{(T-1), i}}{D_{T,i}}A_{ij}^{(T-1)}
+    + \frac{\xi(z_{(T-1)i}, z_{Tj})}{D_{T,i}} \\
+                 &+ \frac{\mathbbm{1}(i = j)[(T-1)^\zeta - (T-2)^\zeta]}{D_{T,i}}
+\end{align*}
+
+Given that $\beta(z_{T,k}) = 1$, we have $\gamma(z_{tk}) = \alpha(z_{tk}) / \sum_{i=1}^{K}\alpha(z_{ti})$ for the incremental update. The corresponding incremental update equations for a Gaussian emission model (as reported in~\cite{stenger2001}) are 
+\begin{align*}
+    \mathbf{\mu}_{j}^{(T)} &= \frac{\sum_{t=1}^{T-1}\gamma(z_{tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\mathbf{\mu}_{j}^{(T-1)} + \frac{\gamma(z_{Tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\mathbf{x}_T
+\end{align*}
+and
+\begin{align*}
+    \mathbf{S}_j^{(T)} &= \frac{\sum_{t=1}^{T-1}\gamma(z_{tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\mathbf{S}_j^{(T-1)} \\
+                       &+ \frac{\gamma(z_{Tj})}{\sum_{t=1}^{T}\gamma(z_{tj})}\left(\mathbf{x}_T - \mathbf{\mu}_j^{(T)}\right)\left(\mathbf{x}_T - \mathbf{\mu}_j^{(T)}\right)'
+\end{align*}
+where $(\cdot)'$ denotes the matrix transpose operation and $\mathbf{S}_j$ is the covariance matrix for state $j$.
+
+\subsubsection{Initialization}
+
+The process begins by batch-learning initial parameter estimates from a small
+portion of the time-series. These estimates are used for $\mathbf{A}^{(1)}$,
+$\mathbf{\mu}^{(1)}$, $\mathbf{S}^{(1)}$ and $\pi(\mathbf{z}_t)$. For the
+$\alpha$ values, we initialize $\alpha(z_{1j}) = \pi(z_{1j})p(\mathbf{x}_1;
+\phi_j)$ for each $j$. Using Equation~\ref{eq:SCALE-FREE-MAP} and the definition
+of $D_{T,i}$, we compute $D_{2,i} = \sum_{j=1}^{K} \xi(z_{1i}, z_{2j})$, and 
+$A_{ij}^{(2)} = \xi(z_{1i}, z_{2j})/D_{2,i}$.
+
+The estimates are then updated for each new observation, using the update equations given above. Algorithm~\ref{alg:incremental} outlines the order in which the various terms are computed.
+
+\begin{algorithm}
+\caption{Incremental Learning}
+\small
+\begin{algorithmic}[1]
+\State Batch learn initial parameter estimates.
+\State Compute $D_{2,i}$ and $A_{ij}^{(2)}$ for all $i,j$.
+\ForAll{$T > 2$}
+\State Compute $\alpha$ values for observation at time $T$.
+\State Compute $\xi(z_{(T-1)i},z_{Tj})$ values for all $i,j$.
+\State Compute $\gamma(z_{Tj})$ and $D_{T,i}$ values for all $i,j$.
+\State Update $A_{i,j}^{(T)}$ using incremental update rule.
+\State Update $\mathbf{\mu}_{j}^{(T)}$ and $\mathbf{S}_{j}^{(T)}$ using incremental update rules.
+\EndFor
+\end{algorithmic}
+\label{alg:incremental}
+\end{algorithm}
+
+\subsubsection{Robust Online Prediction}
+
+In keeping with our desire for slow state transitions, we now consider the problem of incremental prediction. If an observation at time $t$ (the current time step) is an outlier, we cannot know whether the model should remain in the same hidden state, treating the outlier as an anomaly, or transition to a new hidden state. To overcome this limitation, we propose delayed prediction of state labels using a sliding window of length $w$. As the window moves through the observation sequence, the Viterbi algorithm is performed on the section of data within the window and a prediction for the $(t - w/2)$th observation is output. This allows for ``future'' observations to affect ``past'' observations within the window, via the backtracking maximization performed by the algorithm. Assuming we batch-learned an initial segment of data longer than $w/2$, we can begin output delayed state label predictions as soon as incremental learning begins.
+

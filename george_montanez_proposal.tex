@@ -334,19 +334,17 @@ contexts, maintaining a consistent strength of inertial regularization becomes
 important with time series of increasing length, as is the case with online
 learning methods. Figure~\ref{fig:short-real-data} shows a regularized
 segmentation of human accelerometer data (discussed later in the Experiments
-section), where the regularization is strong enough to correctly segment the
-series into large, contiguous sections. If we then increase the number of data
-points in each section by a factor of ten while keeping the same regularization
-parameter setting, we see that the regularization is no longer strong enough, as
-is shown in Figure~\ref{fig:long-real-data}. Two of the sections have become
-splintered into small, choppy regions. Thus, the $\lambda$ parameter is
+section), where the regularization is strong enough to provide good segmentation. If we 
+then increase the number of data points in each section by a factor of ten while keeping 
+the same regularization parameter setting, we see that the regularization is no longer 
+strong enough, as is shown in Figure~\ref{fig:long-real-data}. Thus, the $\lambda$ parameter is
 sensitive to the size of the time series.
 
 \begin{figure}[htbp]
-\setlength{\abovecaptionskip}{0pt}
-\setlength{\belowcaptionskip}{0cm}
+%\setlength{\abovecaptionskip}{0pt}
+%\setlength{\belowcaptionskip}{0cm}
   \centering
-    \includegraphics[width=0.8\linewidth]{images/MAP_results_hard_activity_short_3_states.pdf}
+    \includegraphics[width=1.\linewidth]{images/MAP_results_hard_activity_short_3_states.pdf}
   \caption{\small{Human activities accelerometer data, short sequence. Vertical
   partitions correspond to changes of state.}}
   \label{fig:short-real-data}  
@@ -354,10 +352,10 @@ sensitive to the size of the time series.
 
 
 \begin{figure}[htbp]
-\setlength{\abovecaptionskip}{0pt}
-\setlength{\belowcaptionskip}{0cm}
+%\setlength{\abovecaptionskip}{0pt}
+%\setlength{\belowcaptionskip}{0cm}
   \centering
-    \includegraphics[width=0.8\linewidth]{images/MAP_results_hard_activity_long_3_states.pdf}    
+    \includegraphics[width=1.\linewidth]{images/MAP_results_hard_activity_long_3_states.png}    
   \caption{\small{The long sequence human activities accelerometer data using
   regularization parameter from short sequence.}}
   \label{fig:long-real-data}
@@ -366,8 +364,8 @@ sensitive to the size of the time series.
 We desire models where the regularization strength is scale-free, having roughly the same strength regardless of how the time series grows. To achieve this, we define the $\lambda$ parameter to scale with the number of transitions, namely $\lambda = (T-1)^\zeta$, and our scale-free update equation becomes
 
 \begin{align}\label{eq:SCALE-FREE-MAP}
-  \setlength{\abovedisplayskip}{0pt}
-  \setlength{\belowdisplayskip}{0pt}
+  %\setlength{\abovedisplayskip}{0pt}
+  %\setlength{\belowdisplayskip}{0pt}
     A_{jk} &= \frac{((T - 1)^{\zeta}-1){\mathbbm{1}(j = k)} + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
     {((T - 1)^{\zeta} - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}.
 \end{align}
@@ -523,10 +521,10 @@ mean performance was then computed for the trials, and the average of all one
 hundred test examples was recorded.
 
 \begin{figure}[htbp]
-\setlength{\abovecaptionskip}{0pt}
-\setlength{\belowcaptionskip}{0cm}
+%\setlength{\abovecaptionskip}{0pt}
+%\setlength{\belowcaptionskip}{0cm}
   \centering
-    \includegraphics[width=0.8\linewidth, height=1.5in]{images/MAP_PARAM_FREE_results_hard_activity_long_1,97_3_states.pdf}    
+    \includegraphics[width=1.0\linewidth]{images/MAP_PARAM_FREE_results_hard_activity_long_1,97_3_states.pdf}    
     \caption{\small{Example segmentation of human activities accelerometer data
     using inertial (MAP) HMM}}
     \label{fig:real-results-MAP}
@@ -557,17 +555,16 @@ Inertial PsO HMM ($\zeta = 8.19$) & \textbf{0.99}     & 0.87          & 1.43    
 \label{tab:results-synthetic}
 \end{table}
 
-Results for the synthetic dataset are shown in
-Table~\ref{tab:results-synthetic}. Overall, the MAP regularized HMM had the
+As seen in Table~\ref{tab:results-synthetic}, the MAP regularized HMM had the
 strongest performance, with top scores on all metrics. The inertial
 pseudo-observation HMM also had strong performance, with extremely high accuracy
 and low variation of information. The standard HMM suffered from
 over-segmentation of the data (as reflected in the high SNR, ASNR, and SND
 scores), while the sticky HDP-HMM tended to under-segment the data. All methods
 were able to achieve fairly high accuracy.
-%\vspace{0.1cm}
+
 \subsection{Human Activities Accelerometer Data Results}\label{sec:quantitative}
-%\vspace{0.5cm}
+
 
 \begin{table}[htbp]
 \setlength{\abovecaptionskip}{0pt}
@@ -585,7 +582,6 @@ Inertial PsO HMM ($\zeta = 49.0$) & \textbf{0.94}     & \textbf{1.03} & \textbf{
 }
 \label{tab:results-main}
 \end{table}
-%\vspace{0.1cm}
 
 Results from the human accelerometer dataset are shown in
 Table~\ref{tab:results-main}. Both the MAP HMM and inertial pseudo-observation
@@ -618,9 +614,9 @@ private correspondence. The sticky HDP-HMM suffers from slow mixing rates as the
 dimensionality increases, and computation time explodes, being roughly cubic in
 the dimension. As a result, the one hundred test examples took several days of
 computation time to complete, whereas the inertial HMM methods took a few hours.
-%\vspace{0.2cm}
+
 \section{Discussion}
-%\vspace{0.1cm}
+
 Our results demonstrate the effectiveness of inertial regularization on HMMs for
 time series segmentation. Although derived in two independent ways, the MAP
 regularized and pseudo-observation inertial regularized HMM converge on a
@@ -649,9 +645,9 @@ parameter $\zeta$, which resulted in excellent performance on both datasets
 without the need for hand-tuning several hyperparameters. Although the sticky HDP-HMM 
 has poor performance on the two segmentation tasks, there exist tasks for which the 
 HDP-HMM method may be better suited (e.g., when the correct number of states is unknown).
-%\vspace{0.2cm}
+
 \section{Related Work}
-%\vspace{0.1cm}
+
 Hidden Markov models for sequential data have enjoyed a long history, gaining
 popularity as a result of the widely influential tutorial by
 Rabiner~\cite{rabiner1989tutorial}. Specific to the work presented here, the use
@@ -675,9 +671,9 @@ along with a truncation limit. In contrast, our models only require the
 specification of two parameters, $K$ and $\zeta$, whereas the
 sticky HDP-HMM requires analogous truncation level $L$ and $\kappa$ parameters
 to be chosen, in addition to the hyperparameters on the model priors. 
-%\vspace{0.2cm}
+
 \section{Conclusions}
-%\vspace{0.2cm}
+
 To model changes in multivariate time series data, we derive two modified forms of hidden Markov model that effectively enforce state persistence. Although the methods derived here are simple, they perform well and are computationally tractable. We have shown that our inertial models are easily implemented, run efficiently, add almost no additional computation cost, and work well on data with moderate dimensions. Their simplicity is thus a feature and not a bug. 
 
 We also presented a simple heuristic method for automated selection of the regularization-strength parameter. Our experiments on synthetic and real-world datasets show the effectiveness of our methods, giving large improvements in performance over standard HMMs and the sticky HDP-HMM.

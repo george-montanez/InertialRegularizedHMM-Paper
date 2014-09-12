@@ -258,14 +258,12 @@ define $p$ as $\epsilon$ raised to the number of non-self-transitions, $M$, in
 the state transition sequence, so that the probability of selecting a
 self-transition increases as $M$ decreases. Using
 the fact that $M=(T-1) - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}$, we obtain
-
 \begin{align}
     p &= \epsilon^M = \epsilon^{\sum^{T}_{t=2}1 -
     \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}} \notag\\
       &= \epsilon^{\sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k} - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}} \notag\\
       &= \prod^{T}_{t=2}\prod_{k=1}^{K}\epsilon^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}. \label{eq:eps-0}
 \end{align}
-
 Since $\epsilon$ is arbitrary, we choose $\epsilon = A_{kk}$, to allow $p$ to scale appropriately with increasing probability of self-transition. We therefore arrive at
 \begin{align*}
     p &= \prod^{T}_{t=2}\prod^{K}_{k=1}A_{kk}^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}.
@@ -341,19 +339,17 @@ strong enough, as is shown in Figure~\ref{fig:long-real-data}. Thus, the $\lambd
 sensitive to the size of the time series.
 
 \begin{figure}[htbp]
-%\setlength{\abovecaptionskip}{0pt}
-%\setlength{\belowcaptionskip}{0cm}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{0cm}
   \centering
     \includegraphics[width=1.\linewidth]{images/MAP_results_hard_activity_short_3_states.pdf}
   \caption{\small{Human activities accelerometer data, short sequence. Vertical
   partitions correspond to changes of state.}}
   \label{fig:short-real-data}  
 \end{figure}
-
-
 \begin{figure}[htbp]
-%\setlength{\abovecaptionskip}{0pt}
-%\setlength{\belowcaptionskip}{0cm}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{0cm}
   \centering
     \includegraphics[width=1.\linewidth]{images/MAP_results_hard_activity_long_3_states.png}    
   \caption{\small{The long sequence human activities accelerometer data using
@@ -362,14 +358,12 @@ sensitive to the size of the time series.
 \end{figure}
 
 We desire models where the regularization strength is scale-free, having roughly the same strength regardless of how the time series grows. To achieve this, we define the $\lambda$ parameter to scale with the number of transitions, namely $\lambda = (T-1)^\zeta$, and our scale-free update equation becomes
-
 \begin{align}\label{eq:SCALE-FREE-MAP}
-  %\setlength{\abovedisplayskip}{0pt}
-  %\setlength{\belowdisplayskip}{0pt}
+  \setlength{\abovedisplayskip}{0pt}
+  \setlength{\belowdisplayskip}{0pt}
     A_{jk} &= \frac{((T - 1)^{\zeta}-1){\mathbbm{1}(j = k)} + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
     {((T - 1)^{\zeta} - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}.
 \end{align}
-
 This preserves the effect of regularization as $T$ increases, and $\zeta$
 becomes our new regularization parameter, controlling the strength of the
 regularization. For consistency, we also re-parameterize
@@ -386,13 +380,11 @@ with respect to the Gini ratio~\cite{gini1936,wiki:1}, which is a measure of
 statistical dispersion often used to quantify income inequality. For a
 collection of observed segment lengths $L = \{l_1, \ldots, l_m\}$, given in
 ascending order, the Gini ratio is estimated by
-
 \begin{align*}
-  %\setlength{\abovedisplayskip}{0pt}
-  %\setlength{\belowdisplayskip}{0pt}
+  \setlength{\abovedisplayskip}{0pt}
+  \setlength{\belowdisplayskip}{0pt}
     G(L) &= 1 - \frac{2}{m-1}\left(m - \frac{\sum_{i=1}^{m} i l_i}{\sum_{i=1}^{m} l_i}\right).
 \end{align*}
-
 Our assumption is that the true segmentation has a Gini ratio less than
 one-half, which corresponds to having more equality among segment lengths than
 not. One can perform a binary search on the search interval to find the smallest
@@ -428,8 +420,7 @@ equal start probabilities and emission parameters $\mathbf{\mu}_1 = (-1, -1, -1)
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0cm}
   \centering
-    \includegraphics[width=1.\linewidth,
-    height = 1.5in]{images/3D_synthetic_data_example.pdf}    
+    \includegraphics[width=1.\linewidth]{images/3D_synthetic_data_example.pdf}    
   \caption{\small{Simulated data example. Generated from two-state HMM with 3D
   Gaussian emissions and strong self-transitions.}}
   \label{fig:simulated}
@@ -453,8 +444,7 @@ time series with many (or extremely short) segments. This process produced
 multivariate time series of fixed length, with varying number of segments,
 activities and segment lengths. The process was repeated to generate one hundred
 such time series of ten thousand time points each used in the quantitative
-analysis described in Section~\ref{sec:quantitative}. An example of such
-generated data sequences is shown in Figure~\ref{fig:accelerometer} and the
+analysis described later. An example of such generated data sequences is shown in Figure~\ref{fig:accelerometer} and the
 distribution of the time series according to number of activities and segments
 is shown in Figure~\ref{fig:distribution}.
 
@@ -462,18 +452,18 @@ is shown in Figure~\ref{fig:distribution}.
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0cm}
   \centering
-    \includegraphics[width=1.\linewidth, height=1.5in]{images/accelerometer-data.pdf}
-    \label{fig:accelerometer}
+    \includegraphics[width=1.\linewidth]{images/accelerometer-data.pdf}
   \caption{\small{Human activities accelerometer data. Three state,
   45-dimensional.}}
+    \label{fig:accelerometer}
 \end{figure}
 \begin{figure}[htbp]
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0cm}
   \centering
     \includegraphics[width=1.\linewidth]{images/distribution_of_dataset_segments.pdf}
-    \label{fig:distribution}
     \caption{\small{Distribution of Accelerometer Time Series Data.}}
+  \label{fig:distribution}
 \end{figure}
 
 \subsection{Experimental Design and Evaluation Methods}
@@ -521,10 +511,10 @@ mean performance was then computed for the trials, and the average of all one
 hundred test examples was recorded.
 
 \begin{figure}[htbp]
-%\setlength{\abovecaptionskip}{0pt}
-%\setlength{\belowcaptionskip}{0cm}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{0cm}
   \centering
-    \includegraphics[width=1.0\linewidth]{images/MAP_PARAM_FREE_results_hard_activity_long_1,97_3_states.pdf}    
+    \includegraphics[width=1.0\linewidth]{images/real_segmentation_result.pdf}    
     \caption{\small{Example segmentation of human activities accelerometer data
     using inertial (MAP) HMM}}
     \label{fig:real-results-MAP}
@@ -564,7 +554,6 @@ scores), while the sticky HDP-HMM tended to under-segment the data. All methods
 were able to achieve fairly high accuracy.
 
 \subsection{Human Activities Accelerometer Data Results}\label{sec:quantitative}
-
 
 \begin{table}[htbp]
 \setlength{\abovecaptionskip}{0pt}

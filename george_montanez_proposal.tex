@@ -8,7 +8,7 @@
 \setlength{\pdfpagewidth}{8.5in} 
 \setlength{\pdfpageheight}{11in}
 
-\frenchspacing
+%\frenchspacing
 \newcommand{\unionf}{\bigcup_{n=1}^{\infty} \mathcal{F}_n}
 \newcommand{\F}{\mathcal{F}}
 \newcommand{\E}{\mathbb{E}}
@@ -18,18 +18,16 @@
 \newcommand{\Aseq}{\{A_k\}_{k=1}^{\infty}}
 \newcommand{\unionA}{\bigcup_{k=1}^{\infty} A_k}
 \newcommand{\argmax}{\operatornamewithlimits{argmax}}
-
 \newenvironment{dedication}
         {\vspace{0.0ex}\begin{quotation}\begin{center}\begin{em}}
         {\par\end{em}\end{center}\end{quotation}}
-
 \makeatletter
 \def\BState{\State\hskip-\ALG@thistlm}
 \makeatother
 
 \pdfinfo{
 /Title (Inertial Hidden Markov Models: Modeling Change in Multivariate Time Series)
-/Author (George D. Montanez, Saeed Amizadeh, Nikolay Laptev)
+%/Author (George D. Montanez, Saeed Amizadeh, Nikolay Laptev)
 /Keywords (segmenting time series, unsupervised learning, hidden Markov models, state persistence, inertial HMM)
 }
 
@@ -39,21 +37,23 @@
 %                                   Authors
 %...............................................................................
 
-\author{George D. Monta\~nez \\
-School of Computer Science\\
-Carnegie Mellon University\\
-Pittsburgh, PA USA\\
-\texttt{gmontane@cs.cmu.edu} \\
-\And
-Saeed Amizadeh\\
-Yahoo Labs\\
-Sunnyvale, CA USA\\
-\texttt{amizadeh@yahoo-inc.com}\\
-\And
-Nikolay Laptev\\
-Yahoo Labs\\
-Sunnyvale, CA USA\\
-\texttt{nlaptev@yahoo-inc.com}}
+\setlength\titlebox{1.25in}
+%\author{George D. Monta\~nez \\
+%School of Computer Science\\
+%Carnegie Mellon University\\
+%Pittsburgh, PA USA\\
+%\texttt{gmontane@cs.cmu.edu} \\
+%\And
+%Saeed Amizadeh\\
+%Yahoo Labs\\
+%Sunnyvale, CA USA\\
+%\texttt{amizadeh@yahoo-inc.com}\\
+%\And
+%Nikolay Laptev\\
+%Yahoo Labs\\
+%Sunnyvale, CA USA\\
+%\texttt{nlaptev@yahoo-inc.com}}
+
 
 \begin{document}
 
@@ -77,16 +77,13 @@ Sunnyvale, CA USA\\
     HDP-HMM, our methods provide simple, drop-in replacements for standard
     hidden Markov model update rules, allowing standard expectation maximization
     (EM) algorithms to be used for learning. 
-%     Lastly, we make progress towards
-%     tuning the regularization strength in an unsupervised manner and derive
-%     equations for online learning of the regularized HMM parameters.
 \end{abstract}
-%\vspace{0.1cm}
+
 \section{Introduction}
-%\vspace{0.1cm}
+
 \begin{dedication} ``Some seek complex solutions to simple problems; it is better to find simple solutions to complex problems.'' - \emph{Soramichi Akiyama}
 \end{dedication}
-%\vspace{0.1cm}
+
 Time series data arise in different areas of science and technology, describing
 the behavior of both natural and man-made systems over time. These
 behaviors are often quite complex with uncertainty, which in turn require us to
@@ -107,13 +104,13 @@ answer both.
 One crucial observation in many real-world systems (natural and man-made),
 however, is that the behavior changes are typically infrequent; that is, the
 system takes some (unknown) time before it changes its behavior to a new modus operandi. For
-instance, in our earlier example, it is unlikely that a person changes between
-walking and running very frequently, making the durations of different
+instance, in our earlier example, it is unlikely for a person to rapidly fluctuate between
+walking and running, making the durations of different
 activities over time relatively long and highly variable. We refer to this as the
 \emph{inertial property}, alluding to the physical property of matter that
 ensures it will continue along a fixed course unless acted upon by an external
-force. Unfortunately, the classical HMMs are not equipped with sufficient
-mechanisms to capture this property and quite often result in a high rate of
+force. Unfortunately, classical HMMs are not equipped with sufficient
+mechanisms to capture this property and often result in a high rate of
 state transitioning and subsequently false positives in terms of detecting
 change points.
 
@@ -144,9 +141,9 @@ experiments on both synthetic and moderate dimensional real datasets, we show
 that Inertial HMMs are not only much faster than the HDP-HMM, but also produce 
 significantly better detection, suggesting Inertial HMMs as a far more practical 
 choice in comparison to the current state-of-the-art.
-%\vspace{0.2cm}
+
 \section{Problem Statement}
-%\vspace{0.1cm}
+
 Let $\mathbf{X} = \{\mathbf{x}_1, \ldots, \mathbf{x}_T\}$ denote a
 $d$-dimensional multivariate time series, where $\mathbf{x}_t \in \mathbb{R}^d$.
 Given such a time series, we seek to segment $\mathbf{X}$ along the time axis
@@ -157,16 +154,12 @@ where $|\mathbf{z}| = K$ and $\sum_{i=1}^{K}z_{t,i} = 1$. For simplicity of
 notation, let $\mathbf{z}_{t} = k$ denote $z_{t,k} = 1$ and let $\mathbf{Z} =
 \{\mathbf{z}_1, \ldots, \mathbf{z}_T\}$ denote the sequence of latent states.
 Then for all $\mathbf{x}_{t}$ mapping to state $k$, we require that
-
-%\vspace{0.5cm}
 \begin{align*}
     \Pr(\mathbf{x}_{t+1}|\mathbf{X}_{1\ldots t}, \mathbf{z}_t = k) 
     &= \Pr(\mathbf{x}_{t+1}| \mathbf{z}_t = k) \\
     &= \Pr(\mathbf{x}_{t'+1}| \mathbf{z}_{t'} = k) \\
     &= \Pr(\mathbf{x}_{t'+1}| \mathbf{X}_{1\ldots t'}, \mathbf{z}_{t'} = k).
 \end{align*}
-%\vspace{0.1cm}
-
 Thus, the conditional distribution over futures at time $t$ conditioned on being
 in state $k$ is equal to the distribution over futures at time $t'$ conditioned
 on being in the same state. Thus, we assume conditional independence given
@@ -193,7 +186,7 @@ reduces the likelihood of transitioning between different latent states.
 %The output of the process is a list of integer tuples $(t, k)$, where $1 \leq t \leq T$ denotes the ending time of the segment and $1 \leq k \leq K$ the state that occurs during that segment. 
 %\vspace{0.1cm}
 \section{Inertial Hidden Markov Models}
-%\vspace{0.1cm}
+
 Hidden Markov models (HMMs) are a class of long-studied probabilistic models
 well-suited for sequential data~\cite{rabiner1989tutorial}. As a starting point
 for developing our inertial HMMs, we begin a standard $K$-state HMM with
@@ -211,61 +204,40 @@ share a related mathematical structure and, as is shown in
 the Experiments section, have similar performance in practice.
 
 We will next describe both methods and provide outlines of their derivations. 
-% (the pseudo-observation inertial HMM).
-%\vspace{0.1cm}
-\subsection{Maximum A Posteriori (MAP) Regularized HMM}
-%\vspace{0.1cm}
-Following~\cite{MAP1994}, we alter the standard HMM to include a Dirichlet prior on the transition probability matrix, such that transitions out-of-state are penalized by some regularization factor. A Dirichlet prior on the transition matrix $\mathbf{A}$, for the $j$th row, has the form
 
-%\vspace{0.5cm}
+\subsection{Maximum A Posteriori (MAP) Regularized HMM}
+
+Following~\cite{MAP1994}, we alter the standard HMM to include a Dirichlet prior on the transition probability matrix, such that transitions out-of-state are penalized by some regularization factor. A Dirichlet prior on the transition matrix $\mathbf{A}$, for the $j$th row, has the form
 \begin{align*}
     p(A_j; \eta) &\propto \prod_{i=1}^{K} A_{jk}^{\eta_{jk}-1}
 \end{align*}
-%\vspace{0.1cm}
-
 where the $\eta_{jk}$ are free parameters and $A_{jk}$ is the transition probability from state $j$ to state $k$. The posterior joint density over $\mathbf{X}$ and $\mathbf{Z}$ becomes
-
-%\vspace{0.5cm}
 \begin{align*}
     P(\mathbf{X}, \mathbf{Z} ; \mathbf{\theta}, \eta) 
     &\propto \left[\prod_{i=1}^{K}\prod_{i=1}^{K} A_{jk}^{\eta_{jk} - 1}\right] P(\mathbf{X}, \mathbf{Z} \mid \mathbf{A}; \mathbf{\theta}) 
 \end{align*}
-%\vspace{0.1cm}
-
 and the log-likelihood is
-
-%\vspace{0.5cm}
 \begin{align*}
 \ell(\mathbf{X}, \mathbf{Z} ; \mathbf{\theta}, \eta) 
 &\propto \sum_{i=1}^{K}\sum_{i=1}^{K} (\eta_{jk} - 1)\log A_{jk} + \log P(\mathbf{z}_{1}; \theta) \\
 &+ \sum_{t=1}^{T}\log P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) + \sum_{t=2}^{T}\log P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta}).
 \end{align*}
-%\vspace{0.1cm}
-
 MAP estimation is then used in the M-step of the EM algorithm, to update the transition probability matrix. Maximizing, with appropriate Lagrange multiplier constraints, we obtain the update equation for the transition matrix, 
-
-%\vspace{0.5cm}
 \begin{align}
     A_{jk} &= \frac{(\eta_{jk} - 1) + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
     {\sum_{i=1}^{K}(\eta_{ji} - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}.
 \end{align}
-%\vspace{0.1cm}
-
 where the $\xi(z_{(t-1)j}, z_{tk})=\mathbb{E}[z_{(t-1)j}z_{tk}]$.
 
 Given our prior, we can control the probability of self-transitions among states, but this method requires that we choose a set of $K^2$ parameters for the Dirichlet prior. However, since we are solely concerned about increasing the probability of self-transitions, we can reduce these parameters to a single parameter $\lambda$ governing the amplification of self-transitions. We therefore define $\eta_{jk} = 1$ when $j\not=k$ and $\eta_{kk}= \lambda \geq 1$ otherwise, and the transition update equation becomes
-
-%\vspace{0.5cm}
 \begin{align}\label{eq:MAP-final}
     A_{jk} &= \frac{(\lambda - 1){\mathbbm{1}(j = k)} + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
     {(\lambda - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}
 \end{align}
-%\vspace{0.1cm}
-
 where $\mathbbm{1}(\cdot)$ denotes the indicator function.
-%\vspace{0.1cm}
+
 \subsection{Inertial Regularization via Pseudo-observations}
-%\vspace{0.1cm}
+
 Alternatively, we can alter the HMM likelihood function to include a latent binary random variable,
 $V$, indicating that a self-transition was chosen at random from among all transitions, according to some distribution. 
 Thus, we view the transitions as being partitioned into two sets, self-transitions and non-self-transitions, and
@@ -287,23 +259,17 @@ the state transition sequence, so that the probability of selecting a
 self-transition increases as $M$ decreases. Using
 the fact that $M=(T-1) - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}$, we obtain
 
-%\vspace{0.5cm}
 \begin{align}
     p &= \epsilon^M = \epsilon^{\sum^{T}_{t=2}1 -
     \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}} \notag\\
       &= \epsilon^{\sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k} - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}} \notag\\
       &= \prod^{T}_{t=2}\prod_{k=1}^{K}\epsilon^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}. \label{eq:eps-0}
 \end{align}
-%\vspace{0.1cm}
 
 Since $\epsilon$ is arbitrary, we choose $\epsilon = A_{kk}$, to allow $p$ to scale appropriately with increasing probability of self-transition. We therefore arrive at
-
-%\vspace{0.5cm}
 \begin{align*}
     p &= \prod^{T}_{t=2}\prod^{K}_{k=1}A_{kk}^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}.
 \end{align*}
-%\vspace{0.1cm}
-
 Thus, we define $p$ as a computable function of $\mathbf{Z}$ and $\mathbf{A}$.
 Defining $p$ in this deterministic manner is equivalent to choosing the
 parameter value from a degenerate probability distribution that places a single
@@ -315,22 +281,14 @@ parameter $p \in (0,1]$ that satisfies all our desiderata.
 With $p$ in hand, we say that $V$ is drawn according to the Bernoulli
 distribution, Bern($p$), and we observe $V = 1$ (i.e., a member of the
 self-transition set was chosen). 
-% Since $P(V = 1|\mathbf{Z};\mathbf{A}) = p$, we
-% have
-% \begin{align*}
-%     P(V = 1|\mathbf{Z}; \mathbf{A}) &= \prod^{T}_{t=2}\prod^{K}_{k=1}A_{kk}^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}.
-% \end{align*}
+
 To gain greater control over the strength of regularization, let $\lambda$ be a
 positive integer and $\mathbf{V}$ be an $\lambda$-length sequence of
 pseudo-observations, drawn i.i.d.\ according to Bern($p$). Since $P(V =
 1|\mathbf{Z};\mathbf{A}) = p$, we have
-
-%\vspace{0.5cm}
 \begin{align*}
     P(\mathbf{V} = \mathbf{1}|\mathbf{Z}; \mathbf{A}) &= \left[\prod^{T}_{t=2}\prod^{K}_{k=1}A_{kk}^{z_{(t-1)k} - z_{(t-1)k}z_{tk}}\right]^\lambda
 \end{align*}
-%\vspace{0.1cm}
-
 where $\mathbf{1}$ denotes the all-ones sequence of length $\lambda$.
 
 Noting that $\mathbf{V}$ is conditionally independent of $\mathbf{X}$ given the
@@ -339,28 +297,18 @@ latent state sequence $\mathbf{Z}$, we maximize (with respect to $A_{jk}$) the e
 $\mathbf{\theta} = \{\mathbf{\pi},\mathbf{A}, \mathbf{\phi}\}$, which are the start-state
 probabilities, state transition matrix and emission parameters, respectively. Using appropriate Lagrange multipliers, we obtain the regularized
 maximum likelihood estimate for $A_{jk}$:
-
-%\vspace{0.5cm}
 \begin{align}\label{eq:PSO-final}
     A_{jk} &= \frac{B_{j,k,T} + {\mathbbm{1}(j = k)}C_{j,k,T}} 
                    {\sum_{i=1}^{K} B_{j,i,T} + C_{j,j,T}}
 \end{align}
-%\vspace{0.1cm}
-
 where $\mathbbm{1}(\cdot)$ denotes the indicator function, $\gamma(z_{tk}) = \mathbb{E}[z_{tk}]$ and
-
-%\vspace{0.5cm}
 \begin{align}\label{eq:PSO-final-C-part}
     B_{j,k,T} &= \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk}), \notag\\
     C_{j,k,T} &= \lambda\left[\sum_{t=2}^{T}[\gamma(z_{(t-1)k}) - \xi(z_{(t-1)j}, z_{tk})]\right].
 \end{align}
-%\vspace{0.1cm}
-
 The forward-backward algorithm can then be used for efficient computation of the $\gamma$ and $\xi$ values, as in standard HMMs~\cite{bishop2007pattern}.
 
 Ignoring normalization, we see that
-
-%\vspace{0.5cm}
 \begin{align*}
   \setlength{\abovedisplayskip}{0pt}
   \setlength{\belowdisplayskip}{0pt}
@@ -369,8 +317,6 @@ Ignoring normalization, we see that
                 B_{j,k,T} & \mbox{otherwise.}
               \end{cases}
 \end{align*}
-%\vspace{0.1cm}
-
 Examining the $C_{j,j,T}$ term (i.e., Equation~(\ref{eq:PSO-final-C-part})), we see that $\lambda$ is a multiplier of
 additional mass contributions for self-transitions, where the contributions are
 the difference between $\gamma(z_{(t-1)j})$ and $\xi(z_{(t-1)j}, z_{tj})$. These
@@ -378,9 +324,9 @@ two quantities represent, respectively, the expectation of being in a state $j$
 at time $t-1$ and the expectation of remaining there in the next time step. The
 larger $\lambda$ or the larger the difference between arriving at a state and
 remaining there, the greater the additional mass given to self-transition.
-%\vspace{0.1cm}
+
 \subsubsection{Scale-Free Regularization}
-%\vspace{0.1cm}
+
 In Equation~\ref{eq:MAP-final}, the strength of the regularization diminishes
 with growing $T$, so that asymptotically the regularized estimate and
 unregularized estimate become equivalent. While this is desirable in many
@@ -396,16 +342,13 @@ is shown in Figure~\ref{fig:long-real-data}. Two of the sections have become
 splintered into small, choppy regions. Thus, the $\lambda$ parameter is
 sensitive to the size of the time series.
 
-%\vspace{0.1cm}
 \begin{figure}[htbp]
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0cm}
   \centering
     \includegraphics[width=0.8\linewidth]{images/MAP_results_hard_activity_short_3_states.pdf}
-      %\vspace{0.5cm}
   \caption{\small{Human activities accelerometer data, short sequence. Vertical
   partitions correspond to changes of state.}}
-  %\vspace{0.1cm}
   \label{fig:short-real-data}  
 \end{figure}
 
@@ -415,31 +358,27 @@ sensitive to the size of the time series.
 \setlength{\belowcaptionskip}{0cm}
   \centering
     \includegraphics[width=0.8\linewidth]{images/MAP_results_hard_activity_long_3_states.pdf}    
-      %\vspace{0.5cm}
   \caption{\small{The long sequence human activities accelerometer data using
   regularization parameter from short sequence.}}
-  %\vspace{1cm}
   \label{fig:long-real-data}
 \end{figure}
 
 We desire models where the regularization strength is scale-free, having roughly the same strength regardless of how the time series grows. To achieve this, we define the $\lambda$ parameter to scale with the number of transitions, namely $\lambda = (T-1)^\zeta$, and our scale-free update equation becomes
 
-%\vspace{0.5cm}
 \begin{align}\label{eq:SCALE-FREE-MAP}
   \setlength{\abovedisplayskip}{0pt}
   \setlength{\belowdisplayskip}{0pt}
     A_{jk} &= \frac{((T - 1)^{\zeta}-1){\mathbbm{1}(j = k)} + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
     {((T - 1)^{\zeta} - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}.
 \end{align}
-%\vspace{0.1cm}
 
 This preserves the effect of regularization as $T$ increases, and $\zeta$
 becomes our new regularization parameter, controlling the strength of the
 regularization. For consistency, we also re-parameterize
 Equation~(\ref{eq:PSO-final-C-part}) using $\lambda = (T-1)^\zeta$.
-%\vspace{0.1cm}
+
 \subsubsection{Towards Parameter-Free Regularization}\label{sec:param-free}
-%\vspace{0.1cm}
+
 Although our methods require specifying the strength of regularization in advance, one can avoid this requirement by making an assumption concerning the distribution of segment lengths. Namely, by assuming that most of the segment lengths are of roughly the same order-of-magnitude scale, then for a fixed $K$, we can automatically tune the regularization parameter in the following manner.
 
 We first define a range of possible regularization parameter values (such as
@@ -450,13 +389,11 @@ statistical dispersion often used to quantify income inequality. For a
 collection of observed segment lengths $L = \{l_1, \ldots, l_m\}$, given in
 ascending order, the Gini ratio is estimated by
 
-%\vspace{0.5cm}
 \begin{align*}
-  \setlength{\abovedisplayskip}{0pt}
-  \setlength{\belowdisplayskip}{0pt}
+  %\setlength{\abovedisplayskip}{0pt}
+  %\setlength{\belowdisplayskip}{0pt}
     G(L) &= 1 - \frac{2}{m-1}\left(m - \frac{\sum_{i=1}^{m} i l_i}{\sum_{i=1}^{m} l_i}\right).
 \end{align*}
-%\vspace{0.1cm}
 
 Our assumption is that the true segmentation has a Gini ratio less than
 one-half, which corresponds to having more equality among segment lengths than
@@ -464,21 +401,19 @@ not. One can perform a binary search on the search interval to find the smallest
 $\zeta$ parameter for which the Gini ratio is at least one-half. This increases
 the time complexity by a factor of $O(\log_2 (R / \epsilon))$, where $R$ is the
 range of the parameter space.
-%\vspace{0.2cm}
+
 \section{Experiments}\label{sec:Experiments}
-%\vspace{0.1cm}
+
 We perform two segmentation tasks on simulated and real multivariate time series
 data, using our scale- and parameter-free regularized inertial HMMs. For
 comparison, we present the results of applying a standard $K$-state hidden
 Markov model as well as the sticky HDP-HMM of~\cite{fox2011sticky}. We
 performed all tasks in an unsupervised manner, with state labels being used only
 for evaluation.
-%\vspace{0.1cm}
-\subsection{Data}\label{sec:datasets}
-%\vspace{0.1cm}
-A simulated dataset was generated using a two-state HMM with 3D Gaussian emissions, with transition matrix
 
-%\vspace{0.5cm}
+\subsection{Data}\label{sec:datasets}
+
+A simulated dataset was generated using a two-state HMM with 3D Gaussian emissions, with transition matrix
 \begin{align*}
   \setlength{\abovedisplayskip}{0pt}
   \setlength{\belowdisplayskip}{0pt}
@@ -489,24 +424,18 @@ A simulated dataset was generated using a two-state HMM with 3D Gaussian emissio
                    \end{array}
                    \right),
 \end{align*}
-%\vspace{0.1cm}
-
 equal start probabilities and emission parameters $\mathbf{\mu}_1 = (-1, -1, -1)^\top$, $\mathbf{\mu}_2 = (1, 1, 1)^\top$, $\mathbf{\Sigma}_1 = \mathbf{\Sigma}_2 = \text{diag}(3)$. Using this model, we generated one hundred time series consisting of ten-thousand time points each. Figure~\ref{fig:simulated} shows an example time series from this simulated dataset.
-%\vspace{0.1cm}
+
 \begin{figure}[htbp]
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0cm}
   \centering
-  %\vspace{0.1cm}
     \includegraphics[width=1.\linewidth,
     height = 1.5in]{images/3D_synthetic_data_example.pdf}    
-    %\vspace{1cm}
   \caption{\small{Simulated data example. Generated from two-state HMM with 3D
   Gaussian emissions and strong self-transitions.}}
   \label{fig:simulated}
-  %\vspace{0.1cm}
 \end{figure}
-%\vspace{0.1cm}
 The second dataset is generated from real-world forty-five dimensional human accelerometer data, recorded for users performing five different activities, namely, playing basketball, rowing, jumping, ascending stairs and walking in a parking lot ~\cite{Altun:2010:CSC:1823245.1823314}. The data were recorded from a single subject using five Xsens MTx\texttrademark\ units attached to the torso, arms and legs. Each unit had nine sensors, which recorded accelerometer $(X, Y, Z)$ data, gyroscope $(X,Y,Z)$ data and magnetometer $(X,Y,Z)$ data, for a total of forty-five signals at each time point.
 
 We generated one hundred multivariate times series from the underlying dataset,
@@ -530,30 +459,27 @@ analysis described in Section~\ref{sec:quantitative}. An example of such
 generated data sequences is shown in Figure~\ref{fig:accelerometer} and the
 distribution of the time series according to number of activities and segments
 is shown in Figure~\ref{fig:distribution}.
-%\vspace{0.1cm}
+
 \begin{figure}[htbp]
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0cm}
   \centering
     \includegraphics[width=1.\linewidth, height=1.5in]{images/accelerometer-data.pdf}
     \label{fig:accelerometer}
-    %\vspace{0.5cm}
   \caption{\small{Human activities accelerometer data. Three state,
   45-dimensional.}}
 \end{figure}
-%\vspace{0.5cm}
 \begin{figure}[htbp]
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0cm}
   \centering
     \includegraphics[width=1.\linewidth]{images/distribution_of_dataset_segments.pdf}
     \label{fig:distribution}
-    %\vspace{0.5cm}
     \caption{\small{Distribution of Accelerometer Time Series Data.}}
 \end{figure}
-%\vspace{0.5cm}
+
 \subsection{Experimental Design and Evaluation Methods}
-%\vspace{0.1cm}
+
 We compared performance of a standard $K$-state hidden Markov model with our
 batch-learned regularized HMMs on the two datasets described in the previous
 section. For the second dataset, we performed a quantitative analysis, treating
@@ -596,7 +522,6 @@ dataset, measuring performance of the 1000th Gibbs sample for each trial. The
 mean performance was then computed for the trials, and the average of all one
 hundred test examples was recorded.
 
-%\vspace{0.1cm}
 \begin{figure}[htbp]
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0cm}
@@ -605,12 +530,9 @@ hundred test examples was recorded.
     \caption{\small{Example segmentation of human activities accelerometer data
     using inertial (MAP) HMM}}
     \label{fig:real-results-MAP}
-    %\vspace{0.5cm}
 \end{figure}
 
-%\vspace{0.1cm}
 \subsection{Synthetic Data Results}
-%\vspace{0.5cm}
 \begin{table}[htbp]
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0cm}
@@ -624,7 +546,6 @@ Standard HMM                      & 0.87              & 172.20        & 172.20  
 MAP HMM ($\zeta = 2.28$)          & \textbf{0.99}     & \textbf{0.96} & \textbf{1.13}     & \textbf{0.51} & \textbf{0.07}   & \textbf{2/100}                 \\ 
 Inertial PsO HMM ($\zeta = 8.19$) & \textbf{0.99}     & 0.87          & 1.43              & 1.15          & 0.14            & 1/100                          \\ \hline
 \multicolumn{7}{l}{\begin{tabular}[c]{@{}l@{}}
-    %\vspace{0.05em}\\
     \textbf{Acc.} = Average Accuracy (value of 1.0 is best)\\ 
     \textbf{SNR} = Average Segment Number Ratio (value of 1.0 is best)\\ 
     \textbf{ASNR} = Average Absolute Segment Number Ratio (value of 1.0 is best)\\ 
@@ -634,7 +555,6 @@ Inertial PsO HMM ($\zeta = 8.19$) & \textbf{0.99}     & 0.87          & 1.43    
 \end{tabular}
 }
 \label{tab:results-synthetic}
-%\vspace{0.5cm}
 \end{table}
 
 Results for the synthetic dataset are shown in
@@ -652,8 +572,6 @@ were able to achieve fairly high accuracy.
 \begin{table}[htbp]
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0cm}
-
-
 \caption{Results from quantitative evaluation on multivariate human accelerometer data.}
 \resizebox{1.0\linewidth}{!}{
 \begin{tabular}{|lrrrrrr|}

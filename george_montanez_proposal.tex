@@ -86,7 +86,7 @@
 \end{dedication}
 
 Time series data arise in different areas of science and technology, describing
-the behavior of both natural and man-made systems over time. These
+the behavior of both natural and man-made systems. These
 behaviors are often quite complex with uncertainty, which in turn require us to
 incorporate sophisticated dynamics and stochastic models to model them.
 Furthermore, these complex behaviors can \emph{change} over time due to some external event and/or some internal
@@ -94,15 +94,15 @@ systematic change of dynamics/distribution. For example, consider the case of
 monitoring one's physical activity via an array of accelerometer body sensors
 over time. A certain pattern emerges on the time series of the sensors' readings
 while the person is walking; however, this pattern quickly changes to a new one
-as the person begins running. From the data analysis perspective, it is
+as she begins running. From the data analysis perspective, it is
 important to first detect these \emph{change points} as they are quite often
 indicative of an ``interesting'' event or an anomaly in the system. We
 are also interested in characterizing the new \emph{state} of the system (e.g. running vs.\
-walking) which reflects its mode of operation. Change point detection methods~\cite{kawahara2007change,xie2013change} have been proposed
-to answer the first question while the classical Hidden Markov Models (HMM) can
-answer both.
+walking) which reflects its mode of operation. Change point detection
+methods~\cite{kawahara2007change,xie2013change,liu2013change,ray2002bayesian}
+have been proposed to answer the first question while the Hidden Markov Models (HMM) can answer both.
 
-One crucial observation in many real-world systems, natural and man-made, is that the behavior changes are typically infrequent; that is, the
+One crucial observation in many real-world systems, natural and man-made, is the behavior changes are typically infrequent; that is, the
 system takes some (unknown) time before it changes its behavior to a new modus operandi. For
 instance, in our earlier example, it is unlikely for a person to rapidly fluctuate between
 walking and running, making the durations of different
@@ -376,7 +376,7 @@ Although our methods require specifying the strength of regularization in advanc
 
 We first define a range of possible regularization parameter values (such as
 $\lambda \in [0, 75]$), and perform a search on this interval for a value that
-gives \emph{sufficient regularization}. `Sufficient regularization' is defined
+gives \emph{sufficient regularization}. Sufficient regularization is defined
 with respect to the Gini ratio~\cite{gini1936,wiki:1}, which is a measure of
 statistical dispersion often used to quantify income inequality. For a
 collection of observed segment lengths $L = \{l_1, \ldots, l_m\}$, given in
@@ -593,8 +593,8 @@ computation time to complete, whereas the inertial HMM methods took a few hours.
 \section{Discussion}
 
 Our results demonstrate the effectiveness of inertial regularization on HMMs for
-time series segmentation. Although derived in two independent ways, the MAP
-regularized and pseudo-observation inertial regularized HMM converge on a
+behavior change modeling in multivariate time series. Although derived in two
+independent ways, the MAP regularized and pseudo-observation inertial regularized HMM converge on a
 similar maximum likelihood update equation, and thus, had similar performance.
 
 The human activity task highlighted an issue with using standard HMMs for

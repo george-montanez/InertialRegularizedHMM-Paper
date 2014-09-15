@@ -18,6 +18,7 @@
 \newcommand{\Aseq}{\{A_k\}_{k=1}^{\infty}}
 \newcommand{\unionA}{\bigcup_{k=1}^{\infty} A_k}
 \newcommand{\argmax}{\operatornamewithlimits{argmax}}
+
 \newenvironment{dedication}
         {\vspace{0.0ex}\begin{quotation}\begin{center}\begin{em}}
         {\par\end{em}\end{center}\end{quotation}}
@@ -93,16 +94,15 @@ systematic change of dynamics/distribution. For example, consider the case of
 monitoring one's physical activity via an array of accelerometer body sensors
 over time. A certain pattern emerges on the time series of the sensors' readings
 while the person is walking; however, this pattern quickly changes to a new one
-as the person starts running. From the data analysis perspective, it is
+as the person begins running. From the data analysis perspective, it is
 important to first detect these \emph{change points} as they are quite often
 indicative of an ``interesting'' event or an anomaly in the system. We
 are also interested in characterizing the new \emph{state} of the system (e.g. running vs.\
-walking) which reflects its modus operandi. Change point detection methods~\cite{kawahara2007change,xie2013change} have been proposed
+walking) which reflects its mode of operation. Change point detection methods~\cite{kawahara2007change,xie2013change} have been proposed
 to answer the first question while the classical Hidden Markov Models (HMM) can
 answer both.
 
-One crucial observation in many real-world systems (natural and man-made),
-however, is that the behavior changes are typically infrequent; that is, the
+One crucial observation in many real-world systems, natural and man-made, is that the behavior changes are typically infrequent; that is, the
 system takes some (unknown) time before it changes its behavior to a new modus operandi. For
 instance, in our earlier example, it is unlikely for a person to rapidly fluctuate between
 walking and running, making the durations of different
@@ -115,15 +115,15 @@ state transitioning and subsequently false positives in terms of detecting
 change points.
 
 Few solutions exist in the literature to address this problem. In
-the context of Markov models, Fox \emph{et al.}~\cite{fox2011sticky}\ have
+the context of Markov models, Fox \emph{et al.}~\cite{fox2011sticky,willsky2009nonparametric}\ have
 recently proposed the \emph{sticky hierarchical Dirichlet process hidden Markov
 model (HDP-HMM)} which uses a Bayesian non-parametric approach with appropriate
 priors to promote self-transitioning (or \emph{stickiness}) for HMMs. Despite its
-nice theoretical foundations, the HDP-HMM is not a practical solution in many real-world situations.
+elegant theoretical foundation, the sticky HDP-HMM is not a practical solution in many real-world situations.
 In particular, the performance of the HDP-HMM tends to degrade as the
 dimensionality of the problem increases beyond ten dimensions. Moreover, due to 
-iterative Gibbs sampling for its learning, the HDP-HMM can become computationally prohibitive. 
-In practice, the most significant drawback of the HDP-HMM originates with its non-parametric 
+iterative Gibbs sampling for its learning, the sticky HDP-HMM can become computationally prohibitive. 
+In practice, the most significant drawback of the sticky HDP-HMM originates with its non-parametric 
 Bayesian nature: due to the existence of many hyperparameters, the search space for initial tuning is 
 exponentially large which significantly affects the learning quality for a given task.
 
@@ -517,24 +517,26 @@ hundred test examples was recorded.
 
 \subsection{Synthetic Data Results}
 \begin{table}[htbp]
+\centering
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0cm}
-\caption{\small{Results from quantitative evaluation on two-state, 3D synthetic
-data.}} \resizebox{1.0\linewidth}{!}{
+\caption{\small{Results from quantitative evaluation on 3D synthetic data. Statistical significance is computed with respect to MAP results.}} 
+\resizebox{1.0\linewidth}{!}{
 \begin{tabular}{|lrrrrrr|}
 \hline
-\textbf{Method}                   & \textbf{Acc.} & \textbf{SNR}  & \textbf{ASNR}     & \textbf{SND}  & \textbf{VOI}    & \textbf{Perfect}  \\ \hline
-Sticky HDP-HMM ($\kappa = 10$)    & 0.85              & 0.59          & 3.50              & 2.79          & 0.56            & 0/100                          \\ 
-Standard HMM                      & 0.87              & 172.20        & 172.20            & 765.91        & 0.62            & 0/100                          \\ 
-MAP HMM ($\zeta = 2.28$)          & \textbf{0.99}     & \textbf{0.96} & \textbf{1.13}     & \textbf{0.51} & \textbf{0.07}   & \textbf{2/100}                 \\ 
-Inertial PsO HMM ($\zeta = 8.19$) & \textbf{0.99}     & 0.87          & 1.43              & 1.15          & 0.14            & 1/100                          \\ \hline
-\multicolumn{7}{l}{\begin{tabular}[c]{@{}l@{}}
+\textbf{Method}                   & \textbf{Acc.}\phantom{*} & \textbf{SNR}\phantom{*}  & \textbf{ASNR}\phantom{*} & \textbf{SND}\phantom{*} & \textbf{VOI}\phantom{*} & \textbf{Per.}  \\ \hline
+HDP-HMM ($\kappa = 10$)           & 0.85*           & 0.59*       & 3.50*           & 2.79*       & 0.56*           & 0/100                          \\ 
+Standard HMM                      & 0.87*           & 172.20*     & 172.20*         & 765.91*    & 0.62*            & 0/100                          \\ 
+MAP HMM ($\zeta = 2.3$)           & \textbf{0.99}\phantom{*} & \textbf{0.96}\phantom{*} & \textbf{1.13}\phantom{*} & \textbf{0.51}\phantom{*} & \textbf{0.07}\phantom{*} & \textbf{2/100} \\ 
+PsO HMM ($\zeta = 8.2$) & \textbf{0.99}\phantom{*} & 0.87$\ddagger$         & 1.43$\ddagger$   & 1.15* & 0.14$\dagger$  & 1/100                          \\ \hline
+\multicolumn{7}{|l|}{\begin{tabular}[c]{@{}l@{}}
     \textbf{Acc.} = Average Accuracy (value of 1.0 is best)\\ 
     \textbf{SNR} = Average Segment Number Ratio (value of 1.0 is best)\\ 
     \textbf{ASNR} = Average Absolute Segment Number Ratio (value of 1.0 is best)\\ 
     \textbf{SND} = Average Segment Number Difference (value of 0.0 is best)\\ 
     \textbf{VOI} = Average Normalized Variation of Information (value of 0.0 is best)\\ 
-    \textbf{Perfect} = Total number of perfect/correct segmentations \end{tabular}} 
+    \textbf{Per.} = Total number of perfect/correct segmentations \end{tabular}} \\ \hline
+\multicolumn{7}{c}{paired $t$-test: $\dagger$ $< \alpha = .05$, $\ddagger$ $< \alpha = .01$, * $< \alpha = .001$}\\ 
 \end{tabular}
 }
 \label{tab:results-synthetic}
@@ -553,15 +555,16 @@ were able to achieve fairly high accuracy.
 \begin{table}[htbp]
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{0cm}
-\caption{Results from quantitative evaluation on multivariate human accelerometer data.}
+\caption{Results from real 45D human accelerometer data.}
 \resizebox{1.0\linewidth}{!}{
 \begin{tabular}{|lrrrrrr|}
 \hline
-\textbf{Method}                   & \textbf{Acc.} & \textbf{SNR}  & \textbf{ASNR}     & \textbf{SND}  & \textbf{VOI}    & \textbf{Perfect}  \\ \hline
-Sticky HDP-HMM ($\kappa = 100$)   & 0.60              & 0.75          &  4.68             & 5.03          & 0.95            & 0/100                           \\ 
-Standard HMM                      & 0.79              & 134.59        & 134.59            & 584.16        & 0.38            & 9/100                          \\ 
-MAP HMM ($\zeta = 33.5$)          & \textbf{0.94}     & 1.28          & 1.43              & 2.62          & \textbf{0.14}   & \textbf{48/100}                 \\ 
-Inertial PsO HMM ($\zeta = 49.0$) & \textbf{0.94}     & \textbf{1.03} & \textbf{1.29}     & \textbf{1.29} & 0.15            & \textbf{48/100}                 \\ \hline
+\textbf{Method}            & \textbf{Acc.}\phantom{*} & \textbf{SNR}\phantom{*}  & \textbf{ASNR}\phantom{*}     & \textbf{SND}\phantom{*}  & \textbf{VOI}\phantom{*}    & \textbf{Per.}\phantom{*}  \\ \hline
+HDP-HMM ($\kappa = 100$)   & 0.60*          & 0.75$\ddagger$    &  4.68*        & 5.03$\ddagger$    & 0.95*             & 0/100*                           \\ 
+Standard HMM               & 0.79*          & 134.59*           & 134.59*       & 584.16*           & 0.38*             & 9/100*                          \\ 
+MAP HMM ($\zeta = 33.5$)   & \textbf{0.94}\phantom{*}  & 1.28\phantom{*}              & 1.43\phantom{*}          & 2.62\phantom{*}              & \textbf{0.14}\phantom{*}     & \textbf{48/100}\phantom{*}                 \\ 
+PsO HMM ($\zeta = 49.0$)   & \textbf{0.94}\phantom{*}  & \textbf{1.03}$\dagger$     & \textbf{1.29}\phantom{*} & \textbf{1.29}\phantom{*}     & 0.15\phantom{*}              & \textbf{48/100}\phantom{*}                 \\ \hline
+\multicolumn{7}{c}{paired $t$-test: $\dagger$ $< \alpha = .05$, $\ddagger$ $< \alpha = .01$, * $< \alpha = .001$}\\ 
 \end{tabular}
 }
 \label{tab:results-main}
@@ -593,7 +596,6 @@ Our results demonstrate the effectiveness of inertial regularization on HMMs for
 time series segmentation. Although derived in two independent ways, the MAP
 regularized and pseudo-observation inertial regularized HMM converge on a
 similar maximum likelihood update equation, and thus, have similar performance.
-Either version can be used for segmentation tasks, according to user preference.
 
 The human activity task highlighted an issue with using standard HMMs for
 segmentation of time series with infrequent state changes, namely,

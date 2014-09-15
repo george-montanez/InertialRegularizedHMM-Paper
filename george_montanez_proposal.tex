@@ -38,7 +38,7 @@
 %                                   Authors
 %...............................................................................
 
-\setlength\titlebox{1.15in}
+\setlength\titlebox{1.18in}
 %\author{George D. Monta\~nez \\
 %School of Computer Science\\
 %Carnegie Mellon University\\
@@ -130,7 +130,7 @@ exponentially large and significantly affects the learning quality for a given t
 In this paper, we propose a regularization-based framework for HMMs, called
 \emph{Inertial hidden Markov models} (Inertial HMMs), which are biased towards the inertial 
 state-transition property. Similar to the sticky HDP-HMM, our framework is based on 
-theoretically sound foundations, yet much simpler and more intuitive than the HDP-HMM. 
+theoretically sound foundations, yet is much simpler and more intuitive than the HDP-HMM. 
 In particular, our framework has only two initial parameters for which we have 
 developed intuitive initialization techniques that significantly minimize the effort 
 needed for parameter tuning. Furthermore, as we show later, our proposed
@@ -139,7 +139,7 @@ upgrade existing HMM libraries to take advantage of our methods, while still pre
 computational efficiency of the standard HMM approach. By performing rigorous
 experiments on both synthetic and moderate dimensional real datasets, we show
 that Inertial HMMs are not only much faster than the sticky HDP-HMM, but also produce 
-significantly better detection, suggesting Inertial HMMs as a far more practical 
+significantly better detection, suggesting Inertial HMMs as a more practical 
 choice in comparison to the current state-of-the-art.
 
 \section{Problem Statement}
@@ -190,7 +190,7 @@ reduces the likelihood of transitioning between different latent states.
 Hidden Markov models (HMMs) are a class of long-studied probabilistic models
 well-suited for sequential data~\cite{rabiner1989tutorial}. As a starting point
 for developing our inertial HMMs, we begin a standard $K$-state HMM with
-Gaussian emission densities. HMMs (locally) maximize the likelihood of the data,
+Gaussian emission densities. HMMs trained by expectation maximization (locally) maximize the likelihood of the data,
 but typically do not guarantee slow inertial transitioning among states. The
 number of states must be specified in advance, but no other parameters need to
 be given, as the remaining parameters are all estimated directly from the
@@ -209,17 +209,17 @@ We will next describe both methods and provide outlines of their derivations.
 
 Following~\cite{MAP1994}, we alter the standard HMM to include a Dirichlet prior on the transition probability matrix, such that transitions out-of-state are penalized by some regularization factor. A Dirichlet prior on the transition matrix $\mathbf{A}$, for the $j$th row, has the form
 \begin{align*}
-    p(A_j; \eta) &\propto \prod_{i=1}^{K} A_{jk}^{\eta_{jk}-1}
+    p(A_j; \eta) &\propto \prod_{k=1}^{K} A_{jk}^{\eta_{jk}-1}
 \end{align*}
 where the $\eta_{jk}$ are free parameters and $A_{jk}$ is the transition probability from state $j$ to state $k$. The posterior joint density over $\mathbf{X}$ and $\mathbf{Z}$ becomes
 \begin{align*}
     P(\mathbf{X}, \mathbf{Z} ; \mathbf{\theta}, \eta) 
-    &\propto \left[\prod_{i=1}^{K}\prod_{i=1}^{K} A_{jk}^{\eta_{jk} - 1}\right] P(\mathbf{X}, \mathbf{Z} \mid \mathbf{A}; \mathbf{\theta}) 
+    &\propto \left[\prod_{j=1}^{K}\prod_{k=1}^{K} A_{jk}^{\eta_{jk} - 1}\right] P(\mathbf{X}, \mathbf{Z} \mid \mathbf{A}; \mathbf{\theta}) 
 \end{align*}
 and the log-likelihood is
 \begin{align*}
 \ell(\mathbf{X}, \mathbf{Z} ; \mathbf{\theta}, \eta) 
-&\propto \sum_{i=1}^{K}\sum_{i=1}^{K} (\eta_{jk} - 1)\log A_{jk} + \log P(\mathbf{z}_{1}; \theta) \\
+&\propto \sum_{j=1}^{K}\sum_{k=1}^{K} (\eta_{jk} - 1)\log A_{jk} + \log P(\mathbf{z}_{1}; \theta) \\
 &+ \sum_{t=1}^{T}\log P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) + \sum_{t=2}^{T}\log P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta}).
 \end{align*}
 MAP estimation is then used in the M-step of the expectation maximization (EM) algorithm to update the transition probability matrix. Maximizing, with appropriate Lagrange multiplier constraints, we obtain the update equation for the transition matrix, 
@@ -256,8 +256,7 @@ We begin with a version of $p$ based on a penalization constant $0 < \epsilon <
 $\epsilon$ to a large positive power, the resulting $p$ will decrease. Thus, we
 define $p$ as $\epsilon$ raised to the number of non-self-transitions, $M$, in
 the state transition sequence, so that the probability of selecting a
-self-transition increases as $M$ decreases. Using
-the fact that $M=(T-1) - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}$, we obtain
+self-transition increases as $M$ decreases. Using the fact that $M=(T-1) - \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}$, we obtain
 \begin{align}
     p &= \epsilon^M = \epsilon^{\sum^{T}_{t=2}1 -
     \sum^{T}_{t=2}\sum^{K}_{k=1}z_{(t-1)k}z_{tk}} \notag\\
@@ -482,14 +481,14 @@ $\text{ASNR} = \max(S_t, S_p)/\min(S_t, S_p)$,
 where $S_t$ is the true number of segments in the sequence and $S_p$ is the predicted number of segments, and quantifies how much a segmentation method diverges from the ground truth in terms of relative factor of segments. Lastly, we tracked the number of segments difference between the predicted segmentation and true segmentation and how many segmentations we done perfectly, giving the correct states at all correct positions.
 
 Parameter selection for the inertial HMM methods was done using the automated
-parameter selection procedure described in the Parameter Modifications section. To speed up evaluation, we ran 
+parameter selection procedure described in the Parameter Modifications section. For faster evaluation, we ran 
 the automated parameter selection process on ten randomly drawn examples, averaged 
 the final $\zeta$ parameter value, and used the fixed value for all trials. The 
 final $\zeta$ parameters are shown in Tables~\ref{tab:results-synthetic} and \ref{tab:results-main}.
 
 To evaluate the sticky HDP-HMM, we used the publicly available HDP-HMM toolbox for MATLAB,
 with default settings for the priors~\cite{HDP-HMM-TOOLKIT}. The Gaussian emission model with normal
-inverse Wishart (NIW) prior were used, and the truncation level $L$ for each
+inverse Wishart (NIW) prior was used, and the truncation level $L$ for each
 example was set to the true number of states, in fairness for comparing with the
 HMM methods developed here, which are also given the true number of states. The
 ``stickiness'' $\kappa$ parameter was chosen in a data-driven manner by testing
@@ -512,8 +511,7 @@ hundred test examples was recorded.
 \setlength{\belowcaptionskip}{0cm}
   \centering
     \includegraphics[width=1.0\linewidth]{images/real_segmentation_result.pdf}    
-    \caption{\small{Example segmentation of human activities accelerometer data
-    using inertial (MAP) HMM}}
+    \caption{\small{Example segmentation of human activities accelerometer data using inertial (MAP) HMM.}}
     \label{fig:real-results-MAP}
 \end{figure}
 
@@ -648,7 +646,7 @@ to be chosen, in addition to the hyperparameters on the model priors.
 
 \section{Conclusions}
 
-For modeling changes in multivariate time series data, we derive two modified forms of hidden Markov model that effectively enforce state persistence. Although the methods derived here are simple, they perform well and are computationally tractable. We have shown that inertial models are easily implemented, run efficiently, add almost no additional computation cost, and work well on data with moderate dimensions. Their simplicity is thus a feature and not a bug. 
+For modeling changes in multivariate time series data, we derive two modified forms of hidden Markov model that effectively enforce state persistence. Although the derived methods are simple, they perform well and are computationally tractable. We have shown that inertial models are easily implemented, run efficiently, add almost no additional computation cost, and work well on data with moderate dimensions. Their simplicity is thus a feature and not a bug. 
 
 Furthermore, a simple method was developed for automated selection of each regularization parameter. Our experiments on synthetic and real-world data show the effectiveness of inertial HMMs, giving large improvements in performance over standard HMMs and the sticky HDP-HMM.
 

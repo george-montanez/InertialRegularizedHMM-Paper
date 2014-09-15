@@ -73,7 +73,7 @@
     over-segmentation and poor performance on a segmentation task involving
     human activity accelerometer data from the UCI Repository.
     The regularized methods developed here are able to perfectly characterize
-    change of behavior in the human activity data in roughly half of the real-data
+    change of behavior in the human activity data for roughly half of the real-data
     test cases, with accuracy of 94\% and low variation of information. In contrast to the
     HDP-HMM, our methods provide simple, drop-in replacements for standard
     hidden Markov model update rules, allowing standard expectation maximization
@@ -125,11 +125,11 @@ dimensionality of the problem increases beyond ten dimensions. Moreover, due to
 iterative Gibbs sampling for its learning, the sticky HDP-HMM can become computationally prohibitive. 
 In practice, the most significant drawback of the sticky HDP-HMM originates with its non-parametric 
 Bayesian nature: due to the existence of many hyperparameters, the search space for initial tuning is 
-exponentially large which significantly affects the learning quality for a given task.
+exponentially large and significantly affects the learning quality for a given task.
 
 In this paper, we propose a regularization-based framework for HMMs, called
 \emph{Inertial hidden Markov models} (Inertial HMMs), which are biased towards the inertial 
-state-transition property. Similar to the HDP-HMM, our framework is based on 
+state-transition property. Similar to the sticky HDP-HMM, our framework is based on 
 theoretically sound foundations, yet much simpler and more intuitive than the HDP-HMM. 
 In particular, our framework has only two initial parameters for which we have 
 developed intuitive initialization techniques that significantly minimize the effort 
@@ -138,7 +138,7 @@ methods in practice boil down to upgraded update rules for standard HMMs. This a
 upgrade existing HMM libraries to take advantage of our methods, while still preserving the
 computational efficiency of the standard HMM approach. By performing rigorous
 experiments on both synthetic and moderate dimensional real datasets, we show
-that Inertial HMMs are not only much faster than the HDP-HMM, but also produce 
+that Inertial HMMs are not only much faster than the sticky HDP-HMM, but also produce 
 significantly better detection, suggesting Inertial HMMs as a far more practical 
 choice in comparison to the current state-of-the-art.
 
@@ -222,12 +222,12 @@ and the log-likelihood is
 &\propto \sum_{i=1}^{K}\sum_{i=1}^{K} (\eta_{jk} - 1)\log A_{jk} + \log P(\mathbf{z}_{1}; \theta) \\
 &+ \sum_{t=1}^{T}\log P(\mathbf{x}_t|\mathbf{z}_t; \mathbf{\theta}) + \sum_{t=2}^{T}\log P(\mathbf{z}_t|\mathbf{z}_{t-1}; \mathbf{\theta}).
 \end{align*}
-MAP estimation is then used in the M-step of the EM algorithm, to update the transition probability matrix. Maximizing, with appropriate Lagrange multiplier constraints, we obtain the update equation for the transition matrix, 
+MAP estimation is then used in the M-step of the expectation maximization (EM) algorithm to update the transition probability matrix. Maximizing, with appropriate Lagrange multiplier constraints, we obtain the update equation for the transition matrix, 
 \begin{align}
     A_{jk} &= \frac{(\eta_{jk} - 1) + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
-    {\sum_{i=1}^{K}(\eta_{ji} - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}.
+    {\sum_{i=1}^{K}(\eta_{ji} - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}
 \end{align}
-where the $\xi(z_{(t-1)j}, z_{tk})=\mathbb{E}[z_{(t-1)j}z_{tk}]$.
+where $\xi(z_{(t-1)j}, z_{tk})=\mathbb{E}[z_{(t-1)j}z_{tk}]$.
 
 Given our prior, we can control the probability of self-transitions among states, but this method requires that we choose a set of $K^2$ parameters for the Dirichlet prior. However, since we are solely concerned about increasing the probability of self-transitions, we can reduce these parameters to a single parameter $\lambda$ governing the amplification of self-transitions. We therefore define $\eta_{jk} = 1$ when $j\not=k$ and $\eta_{kk}= \lambda \geq 1$ otherwise, and the transition update equation becomes
 \begin{align}\label{eq:MAP-final}
@@ -323,6 +323,8 @@ at time $t-1$ and the expectation of remaining there in the next time step. The
 larger $\lambda$ or the larger the difference between arriving at a state and
 remaining there, the greater the additional mass given to self-transition.
 
+\subsection{Parameter Modifications}
+
 \subsubsection{Scale-Free Regularization}
 
 In Equation~\ref{eq:MAP-final}, the strength of the regularization diminishes
@@ -385,7 +387,7 @@ ascending order, the Gini ratio is estimated by
   \setlength{\belowdisplayskip}{0pt}
     G(L) &= 1 - \frac{2}{m-1}\left(m - \frac{\sum_{i=1}^{m} i l_i}{\sum_{i=1}^{m} l_i}\right).
 \end{align*}
-Our assumption is that the true segmentation has a Gini ratio less than
+We assume that the true segmentation has a Gini ratio less than
 one-half, which corresponds to having more equality among segment lengths than
 not. One can perform a binary search on the search interval to find the smallest
 $\zeta$ parameter for which the Gini ratio is at least one-half. This increases
@@ -394,7 +396,7 @@ range of the parameter space.
 
 \section{Experiments}\label{sec:Experiments}
 
-We perform two segmentation tasks on simulated and real multivariate time series
+We perform two segmentation tasks on synthetic and real multivariate time series
 data, using our scale- and parameter-free regularized inertial HMMs. For
 comparison, we present the results of applying a standard $K$-state hidden
 Markov model as well as the sticky HDP-HMM of~\cite{fox2011sticky}. We
@@ -403,7 +405,7 @@ for evaluation.
 
 \subsection{Datasets}\label{sec:datasets}
 
-A simulated dataset was generated using a two-state HMM with 3D Gaussian emissions, with transition matrix
+The first (synthetic) multivariate dataset was generated using a two-state HMM with 3D Gaussian emissions, with transition matrix
 \begin{align*}
   \setlength{\abovedisplayskip}{0pt}
   \setlength{\belowdisplayskip}{0pt}
@@ -414,12 +416,12 @@ A simulated dataset was generated using a two-state HMM with 3D Gaussian emissio
                    \end{array}
                    \right),
 \end{align*}
-equal start probabilities and emission parameters $\mathbf{\mu}_1 = (-1, -1, -1)^\top$, $\mathbf{\mu}_2 = (1, 1, 1)^\top$, $\mathbf{\Sigma}_1 = \mathbf{\Sigma}_2 = \text{diag}(3)$. Using this model, we generated one hundred time series consisting of ten-thousand time points each. Figure~\ref{fig:simulated} shows an example time series from this simulated dataset.
+equal start probabilities and emission parameters $\mathbf{\mu}_1 = (-1, -1, -1)^\top$, $\mathbf{\mu}_2 = (1, 1, 1)^\top$, $\mathbf{\Sigma}_1 = \mathbf{\Sigma}_2 = \text{diag}(3)$. Using this model, we generated one hundred time series consisting of ten-thousand time points each. Figure~\ref{fig:simulated} shows an example time series from this synthetic dataset.
 
-The second dataset is generated from real-world forty-five dimensional human accelerometer data, recorded for users performing five different activities, namely, playing basketball, rowing, jumping, ascending stairs and walking in a parking lot ~\cite{Altun:2010:CSC:1823245.1823314}. The data were recorded from a single subject using five Xsens MTx\texttrademark\ units attached to the torso, arms and legs. Each unit had nine sensors, which recorded accelerometer $(X, Y, Z)$ data, gyroscope $(X,Y,Z)$ data and magnetometer $(X,Y,Z)$ data, for a total of forty-five signals at each time point.
+The second dataset was generated from real-world forty-five dimensional human accelerometer data, recorded for users performing five different activities, namely, playing basketball, rowing, jumping, ascending stairs and walking in a parking lot ~\cite{Altun:2010:CSC:1823245.1823314}. The data were recorded from a single subject using five Xsens MTx\texttrademark\ units attached to the torso, arms and legs. Each unit had nine sensors, which recorded accelerometer $(X, Y, Z)$ data, gyroscope $(X,Y,Z)$ data and magnetometer $(X,Y,Z)$ data, for a total of forty-five signals at each time point.
 
-We generated one hundred multivariate times series from the underlying dataset,
-with varying activities (latent states) and number of segments. To generate
+We generated one hundred multivariate time series from the underlying dataset,
+with varying activities (latent states) and varying number of segments. To generate
 these sets, we first uniformly chose the number of
 segments, between two and twenty. Then, for each segment, we chose an activity
 uniformly at random from among the five possible, and selected a uniformly
@@ -440,7 +442,7 @@ is shown in Figure~\ref{fig:distribution}.
 \setlength{\floatsep}{0cm}
 \centering
     \includegraphics[width=1.\linewidth]{images/3D_synthetic_data_example.pdf}    
-  \caption{\small{Simulated data example. Generated from two-state HMM with 3D
+  \caption{\small{Synthetic data example. Generated from two-state HMM with 3D
   Gaussian emissions and strong self-transitions.}}
   \label{fig:simulated}
 \end{figure}
@@ -479,9 +481,9 @@ absolute segment number ratio (ASNR), which is defined as
 $\text{ASNR} = \max(S_t, S_p)/\min(S_t, S_p)$, 
 where $S_t$ is the true number of segments in the sequence and $S_p$ is the predicted number of segments, and quantifies how much a segmentation method diverges from the ground truth in terms of relative factor of segments. Lastly, we tracked the number of segments difference between the predicted segmentation and true segmentation and how many segmentations we done perfectly, giving the correct states at all correct positions.
 
-To select parameters for the inertial HMM methods, we used the Gini-based automated
-parameter selection procedure. To speed up evaluation, we only 
-ran the automated parameter selection process on ten randomly drawn examples, averaged 
+Parameter selection for the inertial HMM methods was done using the automated
+parameter selection procedure described in the Parameter Modifications section. To speed up evaluation, we ran 
+the automated parameter selection process on ten randomly drawn examples, averaged 
 the final $\zeta$ parameter value, and used the fixed value for all trials. The 
 final $\zeta$ parameters are shown in Tables~\ref{tab:results-synthetic} and \ref{tab:results-main}.
 
@@ -491,16 +493,16 @@ inverse Wishart (NIW) prior were used, and the truncation level $L$ for each
 example was set to the true number of states, in fairness for comparing with the
 HMM methods developed here, which are also given the true number of states. The
 ``stickiness'' $\kappa$ parameter was chosen in a data-driven manner by testing
-values of $\kappa=0.001$, 0.01, 0.1, 1.0, 5.0, 10.0, 50.0, 100.0, 250.0, 500.0,
-750.0 and 1000.0 for best performance over ten randomly selected examples each.
+values of $\kappa=0.001$, 0.01, 0.1, 1, 5, 10, 50, 100, 250, 500, 750 and 1000 
+for best performance over ten randomly selected examples each.
 The mean performance of the 500th Gibbs sample of ten trials was then taken for
 each parameter setting, and the best $\kappa$ was empirically chosen. For the
 synthetic dataset, a final value of $\kappa=10$ was chosen by this method. For
-the real human accelerometer data, a value of $\kappa=100.0$ provided the best
+the real human accelerometer data, a value of $\kappa=100$ provided the best
 accuracy and relatively strong variation of information performance. These
 values were used for evaluation on each entire dataset, respectively.
 
-To evaluate the HDP-HMM, we performed five trials one each example in the test
+To evaluate the HDP-HMM, we performed five trials on each example in the test
 dataset, measuring performance of the 1000th Gibbs sample for each trial. The
 mean performance was then computed for the trials, and the average of all one
 hundred test examples was recorded.
@@ -584,7 +586,7 @@ sequences in many cases. Even more striking was the improvement over the sticky 
 had an average normalized variation of information near 1 (i.e., no correlation between
 the predicted and the true segment labels). The method tended to
 \emph{under}-segment the data, often collapsing to a single uniform output state, reflected in the SNR 
-having a value below one, and struggles with moderate dimensional data, confirmed by Fox and 
+having a value below one, and may struggle with moderate dimensional data, as related by Fox and 
 Sudderth through private correspondence. The sticky HDP-HMM suffers from slow mixing rates as the
 dimensionality increases, and computation time explodes, being roughly cubic in
 the dimension. As a result, the one hundred test examples took several days of
@@ -595,7 +597,7 @@ computation time to complete, whereas the inertial HMM methods took a few hours.
 Our results demonstrate the effectiveness of inertial regularization on HMMs for
 time series segmentation. Although derived in two independent ways, the MAP
 regularized and pseudo-observation inertial regularized HMM converge on a
-similar maximum likelihood update equation, and thus, have similar performance.
+similar maximum likelihood update equation, and thus, had similar performance.
 
 The human activity task highlighted an issue with using standard HMMs for
 segmentation of time series with infrequent state changes, namely,
@@ -611,9 +613,9 @@ synthetic dataset, the default parameters produced poor performance on the
 real-world accelerometer data. It remains possible that different settings of
 hyperparameters may improve performance, but the cost of a combinatorial search
 through hyperparameter space combined with lengthy computation time prohibits an exhaustive 
-exploration. The results at least show a strong dependence on hyperparameter settings for 
+exploration. The results, at minimum, show a strong dependence on hyperparameter settings for 
 acceptable performance. In contrast, the inertial HMM methods make use of a simple heuristic for 
-automatically selecting the strength parameter $\zeta$, which results in excellent performance on 
+automatically selecting the strength parameter $\zeta$, which resulted in excellent performance on 
 both datasets without the need for hand-tuning several hyperparameters. Although the sticky HDP-HMM 
 has poor performance on the two segmentation tasks, there exist tasks for which it may be a better 
 choice (e.g., when the correct number of states is unknown).
@@ -636,8 +638,8 @@ hidden Markov models as a means of enforcing sparse emission distributions.
 Fox \emph{et al.}\ \cite{fox2011sticky} specifically developed a Bayesian sticky
 HMM to provide inertial state persistence. They presented a method capable of
 learning a hidden Markov model without specifying the number of states or
-regularization strength beforehand, using a hierarchical Dirichlet process and
-truncated Gibbs sampling. Their method requires a more complex approach to
+regularization-strength beforehand, using a hierarchical Dirichlet process and
+truncated Gibbs sampling. As discussed, their method requires a more complex approach to
 learning the model and specification of several hyperparameters for the Bayesian priors 
 along with a truncation limit. In contrast, our models only require the 
 specification of two parameters, $K$ and $\zeta$, whereas the
@@ -646,9 +648,9 @@ to be chosen, in addition to the hyperparameters on the model priors.
 
 \section{Conclusions}
 
-To model changes in multivariate time series data, we derive two modified forms of hidden Markov model that effectively enforce state persistence. Although the methods derived here are simple, they perform well and are computationally tractable. We have shown that inertial models are easily implemented, run efficiently, add almost no additional computation cost, and work well on data with moderate dimensions. Their simplicity is thus a feature and not a bug. 
+For modeling changes in multivariate time series data, we derive two modified forms of hidden Markov model that effectively enforce state persistence. Although the methods derived here are simple, they perform well and are computationally tractable. We have shown that inertial models are easily implemented, run efficiently, add almost no additional computation cost, and work well on data with moderate dimensions. Their simplicity is thus a feature and not a bug. 
 
-A simple heuristic was also developed for automated selection of the regularization-strength parameter. Our experiments on synthetic and real-world data show the effectiveness of inertial HMMs, giving large improvements in performance over standard HMMs and the sticky HDP-HMM.
+Furthermore, a simple method was developed for automated selection of each regularization parameter. Our experiments on synthetic and real-world data show the effectiveness of inertial HMMs, giving large improvements in performance over standard HMMs and the sticky HDP-HMM.
 
 The simplicity of our models pave the way for natural extensions, such as incremental parameter learning and changing the form of the class conditional emission distributions to incorporate internal dynamics. Such extensions are the focus of future work.
 

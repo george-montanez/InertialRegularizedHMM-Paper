@@ -28,7 +28,7 @@
 
 \pdfinfo{
 /Title (Inertial Hidden Markov Models: Modeling Change in Multivariate Time Series)
-%/Author (George D. Montanez, Saeed Amizadeh, Nikolay Laptev)
+/Author (George D. Montanez, Saeed Amizadeh, Nikolay Laptev)
 /Keywords (segmenting time series, unsupervised learning, hidden Markov models, state persistence, inertial HMM)
 }
 
@@ -38,22 +38,24 @@
 %                                   Authors
 %...............................................................................
 
-\setlength\titlebox{1.18in}
-%\author{George D. Monta\~nez \\
-%School of Computer Science\\
-%Carnegie Mellon University\\
-%Pittsburgh, PA USA\\
-%\texttt{gmontane@cs.cmu.edu} \\
-%\And
-%Saeed Amizadeh\\
-%Yahoo Labs\\
-%Sunnyvale, CA USA\\
-%\texttt{amizadeh@yahoo-inc.com}\\
-%\And
-%Nikolay Laptev\\
-%Yahoo Labs\\
-%Sunnyvale, CA USA\\
-%\texttt{nlaptev@yahoo-inc.com}}
+%\setlength\titlebox{1.18in}
+\author{George D. Monta\~nez \\
+Machine Learning Department\\
+Carnegie Mellon University\\
+Pittsburgh, PA USA\\
+\texttt{gmontane@cs.cmu.edu} \\
+\And
+Saeed Amizadeh\\
+Yahoo Labs\\
+Yahoo\\
+Sunnyvale, CA USA\\
+\texttt{amizadeh@yahoo-inc.com}\\
+\And
+Nikolay Laptev\\
+Yahoo Labs\\
+Yahoo\\
+Sunnyvale, CA USA\\
+\texttt{nlaptev@yahoo-inc.com}}
 
 
 \begin{document}
@@ -88,7 +90,7 @@
 Time series data arise in different areas of science and technology, describing
 the behavior of both natural and man-made systems. These
 behaviors are often quite complex with uncertainty, which in turn require us to
-incorporate sophisticated dynamics and stochastic models to model them.
+incorporate sophisticated dynamics and stochastic representations to model them.
 Furthermore, these complex behaviors can \emph{change} over time due to some external event and/or some internal
 systematic change of dynamics/distribution. For example, consider the case of
 monitoring one's physical activity via an array of accelerometer body sensors
@@ -100,18 +102,18 @@ indicative of an ``interesting'' event or an anomaly in the system. We
 are also interested in characterizing the new \emph{state} of the system (e.g. running vs.\
 walking) which reflects its mode of operation. Change point detection
 methods~\cite{kawahara2007change,xie2013change,liu2013change,ray2002bayesian}
-have been proposed to answer the first question while Hidden Markov Models (HMM) can answer both.
+have been proposed to address the first challenge while Hidden Markov Models (HMMs) can address both.
 
 One crucial observation in many real-world systems, natural and man-made, is the behavior changes are typically infrequent; that is, the
 system takes some (unknown) time before it changes its behavior to a new modus operandi. For
 instance, in our earlier example, it is unlikely for a person to rapidly fluctuate between
 walking and running, making the durations of different
 activities over time relatively long and highly variable. We refer to this as the
-\emph{inertial property}, alluding to the physical property of matter that
-ensures it will continue along a fixed course unless acted upon by an external
+\emph{inertial property}, alluding to the physical property of matter such that it continues
+along a fixed course unless acted upon by an external
 force. Unfortunately, classical HMMs are not equipped with sufficient
-mechanisms to capture this property and often result in a high rate of
-state transitioning and subsequently false positives in terms of detecting
+mechanisms to capture this property and often produce high rates of
+state transitioning with subsequent false positives when detecting
 change points.
 
 Few solutions exist in the literature to address this problem. In
@@ -131,10 +133,10 @@ In this paper, we propose a regularization-based framework for HMMs, called
 \emph{Inertial hidden Markov models} (Inertial HMMs), which are biased towards the inertial 
 state-transition property. Similar to the sticky HDP-HMM, our framework is based on 
 theoretically sound foundations, yet is much simpler and more intuitive than the HDP-HMM. 
-In particular, our framework has only two initial parameters for which we have 
+In particular, our framework has only two parameters for which we have 
 developed intuitive initialization techniques that significantly minimize the effort 
 needed for parameter tuning. Furthermore, as we show later, our proposed
-methods in practice boil down to upgraded update rules for standard HMMs. This allows one to easily 
+methods in practice boil down to augmented update rules for standard HMMs. This allows one to easily 
 upgrade existing HMM libraries to take advantage of our methods, while still preserving the
 computational efficiency of the standard HMM approach. By performing rigorous
 experiments on both synthetic and moderate dimensional real datasets, we show
@@ -179,17 +181,11 @@ models~\cite{rabiner1989tutorial}. For the second, we directly alter the
 probabilistic form of our model to include a parameterized regularization that
 reduces the likelihood of transitioning between different latent states.
 
-%\subsection{Problem Input and Output}
-%
-%As stated above, we are given a single $d$-dimensional multivariate time series of $T$ time samples. Alternatively, the single time series can be thought of as a collection of $d$ one-dimensional time series. As the generative story, we assume that at each time step $t$ a state $\mathbf{z}_t$ is chosen, given the previous state $\mathbf{z}_{t-1}$, according to the transition probabilities governing states. A $d$-dimensional point-sample is then drawn according to the emission density for state $\mathbf{z}_t$, and the process repeats for $1 < t \leq T$.
-%
-%The output of the process is a list of integer tuples $(t, k)$, where $1 \leq t \leq T$ denotes the ending time of the segment and $1 \leq k \leq K$ the state that occurs during that segment. 
-%\vspace{0.1cm}
 \section{Inertial Hidden Markov Models}
 
 Hidden Markov models (HMMs) are a class of long-studied probabilistic models
 well-suited for sequential data~\cite{rabiner1989tutorial}. As a starting point
-for developing our inertial HMMs, we begin a standard $K$-state HMM with
+for developing our inertial HMMs, we consider a standard $K$-state HMM with
 Gaussian emission densities. HMMs trained by expectation maximization (locally) maximize the likelihood of the data,
 but typically do not guarantee slow inertial transitioning among states. The
 number of states must be specified in advance, but no other parameters need to
@@ -229,7 +225,7 @@ MAP estimation is then used in the M-step of the expectation maximization (EM) a
 \end{align}
 where $\xi(z_{(t-1)j}, z_{tk})=\mathbb{E}[z_{(t-1)j}z_{tk}]$.
 
-Given our prior, we can control the probability of self-transitions among states, but this method requires that we choose a set of $K^2$ parameters for the Dirichlet prior. However, since we are solely concerned about increasing the probability of self-transitions, we can reduce these parameters to a single parameter $\lambda$ governing the amplification of self-transitions. We therefore define $\eta_{jk} = 1$ when $j\not=k$ and $\eta_{kk}= \lambda \geq 1$ otherwise, and the transition update equation becomes
+Given our prior, we can control the probability of self-transitions among states, but this method requires that we choose a set of $K^2$ parameters for the Dirichlet prior. Since we are solely concerned about increasing the probability of self-transitions, we can reduce these parameters to a single parameter, $\lambda$, that governs the amplification of self-transitions. We therefore define $\eta_{jk} = 1$ when $j\not=k$ and $\eta_{kk}= \lambda \geq 1$ otherwise, and the transition update equation becomes
 \begin{align}\label{eq:MAP-final}
     A_{jk} &= \frac{(\lambda - 1){\mathbbm{1}(j = k)} + \sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{tk})}   
     {(\lambda - 1) + \sum_{i=1}^{K}\sum_{t=2}^{T} \xi(z_{(t-1)j}, z_{ti})}
@@ -242,7 +238,7 @@ Alternatively, we can alter the HMM likelihood function to include a latent bina
 $V$, indicating that a self-transition was chosen at random from among all transitions, according to some distribution. 
 Thus, we view the transitions as being partitioned into two sets, self-transitions and non-self-transitions, and
 we draw a member of the self-transition set according to a Bernoulli
-distribution governed by parameter $p$. Given a latent state sequence
+distribution governed by some parameter $p$. Given a latent state sequence
 $\mathbf{Z}$, with transitions chosen according to transition matrix
 $\mathbf{A}$, we define $p$ as a function of both $\mathbf{Z}$ and $\mathbf{A}$.
 We would like $p$ to have two properties: 1) it should increase with increasing
@@ -372,7 +368,7 @@ Equation~(\ref{eq:PSO-final-C-part}) using $\lambda = (T-1)^\zeta$.
 
 \subsubsection{Towards Parameter-Free Regularization}\label{sec:param-free}
 
-Although our methods require specifying the strength of regularization in advance, one can avoid this requirement by making an assumption concerning the distribution of segment lengths. Namely, by assuming that most of the segment lengths are of roughly the same order-of-magnitude scale, then we can automatically tune the regularization parameter, as follows.
+Although our methods require specifying the strength of regularization in advance, we can often avoid this requirement. For example, cross-validation provides a robust method for automated parameter selection when labeled data is available. Furthermore, even in the absence of labeled data all hope is not lost; if one can make the assumption that most of the segment lengths are of roughly the same order-of-magnitude scale then automatic tuning of the regularization parameter remains possible, as follows.
 
 We first define a range of possible regularization parameter values (such as
 $\lambda \in [0, 75]$), and perform a search on this interval for a value that
@@ -391,7 +387,7 @@ one-half, which corresponds to having more equality among segment lengths than
 not. One can perform a binary search on the search interval to find the smallest
 $\zeta$ parameter for which the Gini ratio is at least one-half. This increases
 the time complexity by a factor of $O(\log_2 (R / \epsilon))$, where $R$ is the
-range of the parameter space.
+range of the parameter space and $\epsilon$ is the stopping precision for the binary search.
 
 \section{Experiments}\label{sec:Experiments}
 
@@ -468,17 +464,17 @@ is shown in Figure~\ref{fig:distribution}.
 \subsection{Experimental Methodology}
 
 We compared performance of four methods on the two datasets described in the previous
-section: a standard $K$-state hidden Markov model, the sticky HDP-HMM and both inertial HMM variants. 
+section: a standard $K$-state hidden Markov model, the sticky HDP-HMM and both inertial HMM variants. All HMMs were equipped with Gaussian emission models with full covariance matrices.
 The task was treated as a multi-class classification problem, measuring the minimum
 zero-one loss under all possible permutations of output labels, to accommodate
 permuted mappings of the true labels. We measured the normalized variation of 
-information~\cite{meila} between the predicted state sequence and true state sequence, 
+information (VOI)~\cite{meila} between the predicted state sequence and true state sequence, 
 which is an information metric capturing the distance between two
 partitionings of a sequence. We also considered the ratio of predicted number of segments 
-to true number of segments, which gives a sense of whether a method over- or under-segments data, and the
+to true number of segments (SNR), which gives a sense of whether a method over- or under-segments data, and the
 absolute segment number ratio (ASNR), which is defined as
 $\text{ASNR} = \max(S_t, S_p)/\min(S_t, S_p)$, 
-where $S_t$ is the true number of segments in the sequence and $S_p$ is the predicted number of segments, and quantifies how much a segmentation method diverges from the ground truth in terms of relative factor of segments. Lastly, we tracked the number of segments difference between the predicted segmentation and true segmentation and how many segmentations we done perfectly, giving the correct states at all correct positions.
+where $S_t$ is the true number of segments in the sequence and $S_p$ is the predicted number of segments, and quantifies how much a segmentation method diverges from the ground truth in terms of relative factor of segments. Lastly, we tracked the number of segments difference (SND) between the predicted segmentation and true segmentation and how many segmentations we done perfectly (Per.), giving the correct states at all correct positions.
 
 Parameter selection for the inertial HMM methods was done using the automated
 parameter selection procedure described in the Parameter Modifications section. For faster evaluation, we ran 
@@ -511,7 +507,7 @@ hundred test examples was recorded.
 \setlength{\belowcaptionskip}{0cm}
   \centering
     \includegraphics[width=1.0\linewidth]{images/real_segmentation_result.pdf}    
-    \caption{\small{Example segmentation of human activities accelerometer data using inertial (MAP) HMM.}}
+    \caption{\small{Example segmentation of human activities accelerometer data using inertial (MAP) HMM. Only first dimension shown.}}
     \label{fig:real-results-MAP}
 \end{figure}
 
@@ -574,18 +570,19 @@ Results from the human accelerometer dataset are shown in
 Table~\ref{tab:results-main}. Both the MAP HMM and inertial pseudo-observation
 HMM achieved large gains in performance over the standard HMM model, with
 average accuracy of 94\%. Furthermore, the number of segments was close to
-correct on average, with a value near one in both the absolute and simple ratio
-case. The average normalized variation of information was low for both the MAP and pseudo-observation methods.
+correct on average, with a value near one in both the absolute (ASNR) and simple (SNR) ratio
+case. The average normalized variation of information (VOI) was low for both the MAP and pseudo-observation methods.
 Figure~\ref{fig:real-results-MAP} shows an example segmentation for the MAP HMM, displaying a single dimension of the
 multivariate time series for clarity.
 
-In comparison, a standard hidden Markov model performed poorly, strongly over-segmenting the 
+In comparison, the standard hidden Markov model performed poorly, strongly over-segmenting the 
 sequences in many cases. Even more striking was the improvement over the sticky HDP-HMM, which 
 had an average normalized variation of information near 1 (i.e., no correlation between
 the predicted and the true segment labels). The method tended to
 \emph{under}-segment the data, often collapsing to a single uniform output state, reflected in the SNR 
 having a value below one, and may struggle with moderate dimensional data, as related by Fox and 
-Sudderth through private correspondence. The sticky HDP-HMM suffers from slow mixing rates as the
+Sudderth through private correspondence. Moreover, the poor performance on this dataset likely results 
+from a strong dependence on Bayesian tuning parameters. The sticky HDP-HMM suffers from slow mixing rates as the
 dimensionality increases, and computation time explodes, being roughly cubic in
 the dimension. As a result, the one hundred test examples took several days of
 computation time to complete, whereas the inertial HMM methods took a few hours.
@@ -652,9 +649,9 @@ Furthermore, a simple method was developed for automated selection of each regul
 
 The simplicity of our models pave the way for natural extensions, such as incremental parameter learning and changing the form of the class conditional emission distributions to incorporate internal dynamics. Such extensions are the focus of future work.
 
-% \section{Acknowledgments}
-% The authors would like to thank Emily Fox and Erik Sudderth for their discussions, feedback and assistance with use of the HDP-HMM toolbox.
-%\vspace{0.5cm}
+\section{Acknowledgments}
+ The authors would like to thank Emily Fox and Erik Sudderth for their discussions, feedback and assistance with use of the HDP-HMM toolbox. GDM is supported by the National Science Foundation Graduate Research Fellowship under Grant No.\ 1252522. Any opinions, findings, and conclusions or recommendations expressed in this material are those of the authors alone and do not necessarily reflect the views of the National Science Foundation or any other organization.
+\vspace{0.5cm}
 \fontsize{9.5pt}{10.5pt}
 \selectfont
 \bibliographystyle{aaai}

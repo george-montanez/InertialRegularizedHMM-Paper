@@ -619,13 +619,13 @@ choice (e.g., when the correct number of states is unknown).
 
 Hidden Markov models for sequential data have enjoyed a long history, gaining
 popularity as a result of the widely influential tutorial by
-Rabiner~\cite{rabiner1989tutorial}. Specific to the work presented here, the use
-of regularization for HMM parameters received a general treatment
-in~\cite{MAP1994}, for both transition and emission parameters. Our work details
-a more specific version of the regularization, useful for state persistence.
+Rabiner~\cite{rabiner1989tutorial}. Specific to the work presented here, the mechanics of applying regularization priors 
+to HMMs was detailed in~\cite{MAP1994}, for both transition and emission parameters, with the goal of 
+solving estimation issues arising from sparse data. Our work introduces the use of regularization for 
+enforcing state persistence, an application not considered in the original.
 Neukirchen and Rigoll~\cite{neukirchen1999controlling} studied the use of
 regularization in HMMs for reducing parameter overfitting of emission
-distributions due to insufficient training data, but without an emphasis on
+distributions due to insufficient training data, again without an emphasis on
 inertial transitioning between states. Similarly,
 Johnson~\cite{Johnson07whydoesnt} proposed using Dirichlet priors on multinomial
 hidden Markov models as a means of enforcing sparse emission distributions.
@@ -643,7 +643,7 @@ to be chosen, in addition to the hyperparameters on the model priors.
 
 \section{Conclusions}
 
-For modeling changes in multivariate time series data, we derive two modified forms of hidden Markov model that effectively enforce state persistence. Although the derived methods are simple, they perform well and are computationally tractable. We have shown that inertial models are easily implemented, run efficiently, add almost no additional computation cost, and work well on data with moderate dimensions. Their simplicity is thus a feature and not a bug. 
+For modeling changes in multivariate time series data, we introduce two modified forms of hidden Markov models that effectively enforce state persistence. Although the derived methods are simple, they perform well and are computationally tractable. We have shown that inertial models are easily implemented, add almost no additional computation cost, run efficiently, and work well on data with moderate dimensions. Their simplicity is thus a feature and not a bug. 
 
 Furthermore, a simple method was developed for automated selection of each regularization parameter. Our experiments on synthetic and real-world data show the effectiveness of inertial HMMs, giving large improvements in performance over standard HMMs and the sticky HDP-HMM.
 

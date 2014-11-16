@@ -104,7 +104,7 @@ walking) which reflects its mode of operation. Change point detection
 methods~\cite{kawahara2007change,xie2013change,liu2013change,ray2002bayesian}
 have been proposed to address the first challenge while Hidden Markov Models (HMMs) can address both.
 
-One crucial observation in many real-world systems, natural and man-made, is the behavior changes are typically infrequent; that is, the
+One crucial observation in many real-world systems, natural and man-made, is that the behavioral changes are typically infrequent; that is, the
 system takes some (unknown) time before it changes its behavior to a new modus operandi. For
 instance, in our earlier example, it is unlikely for a person to rapidly fluctuate between
 walking and running, making the durations of different
@@ -194,7 +194,7 @@ data.
 
 To accommodate the inertial transition requirement, we derive two different
 methods for enforcing state-persistence in HMMs. Both methods alter the
-probabilistic form of the complete data joint likelihood, which result
+probabilistic form of the complete data joint likelihood, which results
 in altered transition matrix update equations. The resulting update equations
 share a related mathematical structure and, as is shown in
 the Experiments section, have similar performance in practice.
@@ -630,7 +630,7 @@ inertial transitioning between states. Similarly,
 Johnson~\cite{Johnson07whydoesnt} proposed using Dirichlet priors on multinomial
 hidden Markov models as a means of enforcing sparse emission distributions.
 
-Fox \emph{et al.}\ \cite{fox2011sticky} specifically developed a Bayesian sticky
+Fox \emph{et al.}\ \cite{fox2011sticky} developed a Bayesian sticky
 HMM to provide inertial state persistence. They presented a method capable of
 learning a hidden Markov model without specifying the number of states or
 regularization-strength beforehand, using a hierarchical Dirichlet process and
